@@ -1,0 +1,30 @@
+.editForm {
+   margin: 20px;
+   padding: 20px;
+   width: 500px;
+   border: 1px solid #ccc;
+   border-radius: 5px;
+}
+
+.editForm input {
+   margin-bottom: 10px;
+   padding: 8px;
+   width: 100%;
+}
+
+.editForm button {
+   background-color: #007bff;
+   color: #fff;
+   border: none;
+   padding: 8px 16px;
+   cursor: pointer;
+}
+
+.editForm button:hover {
+   background-color: #0056b3;
+}
+
+.editForm.loading {
+   opacity: 0.5;
+   pointer-events: none;
+}

@@ -1,0 +1,42 @@
+.formContainer {
+   max-width: 400px;
+   margin: 50px auto;
+   background: #333;
+   padding: 20px;
+   border-radius: 8px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.formLabel {
+   display: block;
+   font-size: 16px;
+   color: #fff;
+   margin-bottom: 8px;
+}
+
+.formInput {
+   width: 100%;
+   padding: 10px;
+   margin-bottom: 16px;
+   border: 1px solid #444;
+   border-radius: 5px;
+   background: #222;
+   color: #fff;
+}
+
+.formButton {
+   background: #91ff5d;
+   color: #000000;
+   padding: 10px;
+   width: 100%;
+   font-weight: bold;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 16px;
+   transition: background 0.3s ease-in-out;
+}
+
+.formButton:hover {
+   background: #baff9a;
+}
