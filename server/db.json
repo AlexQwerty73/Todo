@@ -1,76 +1,31 @@
 {
   "todos": [
     {
-      "id": "x33x",
-      "userId": "976f",
-      "title": "todo title 3",
-      "completed": true
-    },
-    {
-      "id": "f1c6",
-      "userId": "976f",
-      "title": "todo title 4",
-      "completed": true
-    },
-    {
-      "id": "567f",
-      "userId": "976f",
-      "title": "todo title 3",
+      "id": "7620",
+      "userId": "88f6",
+      "title": "Qwertyuiop",
       "completed": false
     },
     {
-      "id": "64d0",
-      "userId": "976f",
-      "title": "todo title 5",
-      "completed": false
-    },
-    {
-      "id": "06c3",
-      "userId": "976f",
-      "title": "todo title 1",
+      "id": "8853",
+      "userId": "88f6",
+      "title": "poiuytrewq",
       "completed": true
     },
     {
-      "id": "69a5",
-      "userId": "c0e3",
-      "title": "test todo 1",
-      "completed": false
-    },
-    {
-      "id": "eb11",
-      "userId": "1bf7",
-      "title": "todo alex 2",
+      "id": "fdc2",
+      "userId": "88f6",
+      "title": "qpqqpql",
       "completed": false
     }
   ],
   "users": [
     {
-      "id": "976f",
-      "name": "Oleksii",
-      "email": "alextugai73@gmail.com",
-      "phone": "0980110838",
-      "password": "qwerty"
-    },
-    {
-      "id": "e4fd",
-      "name": "qwe",
-      "email": "qwe@gmail.com",
-      "phone": "380980553539",
-      "password": "eaffefefc"
-    },
-    {
-      "id": "c0e3",
+      "id": "88f6",
       "name": "test",
       "email": "test@gmail.com",
-      "phone": "123241442421312",
-      "password": "teat"
-    },
-    {
-      "id": "1bf7",
-      "name": "Alex",
-      "email": "alex@gmail.com",
-      "phone": "4375689213",
-      "password": "alex"
+      "phone": "000000000",
+      "password": "test"
     }
   ]
 }
