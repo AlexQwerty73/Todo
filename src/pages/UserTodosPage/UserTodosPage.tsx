@@ -5,15 +5,14 @@ import { User } from '../../redux/usersApi';
 
 export const UserTodosPage = () => {
    const { id } = useParams<{ id: string }>();
-   const { data: user } = useGetUsersQuery(id ? Number(id) : undefined);
-   const { data: todos } = useGetTodosByUserIdQuery(Number(id));
+
+   const { data: user } = useGetUsersQuery(id);
+   const { data: todos } = useGetTodosByUserIdQuery(id ?? '');
 
    return (
       <div>
          <h2>User Name: {(user as User)?.name ?? 'Loading...'}</h2>
-
          <AddTodoForm />
-
          <TodosList todos={todos} />
       </div>
    );

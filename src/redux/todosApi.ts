@@ -5,13 +5,13 @@ const baseUrl = 'http://localhost:3001/';
 // Types for the data we work with
 export interface Todo {
    id: number;
-   userId: number;
+   userId: string;
    title: string;
    completed: boolean;
 }
 
 export interface AddTodoBody {
-   userId: number;
+   userId: string;
    title: string;
    completed: boolean;
 }
@@ -37,7 +37,7 @@ export const todosApi = createApi({
       }),
 
       // Get todos by user ID
-      getTodosByUserId: build.query<Todo[], number>({
+      getTodosByUserId: build.query<Todo[], string>({
          query: (userId) => `todos?userId=${userId}`,
          providesTags: (result, error, userId) =>
             result

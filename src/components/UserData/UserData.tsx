@@ -11,10 +11,9 @@ interface UserDataProps {
 export const UserData = ({ editMode }: UserDataProps) => {
    const navigate = useNavigate();
    const { id } = useParams<{ id: string }>();
-   const { data, isLoading } = useGetUsersQuery(id ? Number(id) : undefined);
+   const { data, isLoading } = useGetUsersQuery(id);
 
    const user = !Array.isArray(data) ? data as User : null;
-
    const [showPassword, setShowPassword] = useState(false);
 
    return (

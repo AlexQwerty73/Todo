@@ -1,27 +1,26 @@
 .list {
-   list-style-type: none;
-   padding: 30px 50px;
-   margin: 10px 20px 0 0;
-   background: #222;
-   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-   border-radius: 8px;
-
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 12px;
 }
 
-
 .item {
-   text-decoration: none;
-   color: #fff;
-   transition: 0.3s ease-in-out;
-
-   font-size: 32px;
-   font-weight: bold;
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: #888;
+  padding: 7px 12px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
 }
 
 .item:hover {
-   color: #979797;
+  background: #1e1e22;
+  color: #e0e0e0;
+}
+
+.item.active {
+  background: #1e1e22;
+  color: #e0e0e0;
 }

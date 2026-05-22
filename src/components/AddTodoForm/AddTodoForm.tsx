@@ -16,7 +16,7 @@ export const AddTodoForm = () => {
       }
 
       addTodo({
-         userId: Number(userId),
+         userId: userId,
          title,
          completed: false,
       }).unwrap();

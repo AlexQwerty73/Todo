@@ -4,7 +4,7 @@ const baseUrl = 'http://localhost:3001/';
 
 // Types for the data we work with
 export interface User {
-   id: number;
+   id: string;
    name: string;
    email: string;
    phone: string;
@@ -22,7 +22,7 @@ export const usersApi = createApi({
    endpoints: (build) => ({
 
       // Get all users or single user by ID
-      getUsers: build.query<User | User[], number | undefined>({
+      getUsers: build.query<User | User[], string | undefined>({
          query: (id) => `users${id !== undefined ? `/${id}` : ''}`,
          providesTags: (result) =>
             result && Array.isArray(result)

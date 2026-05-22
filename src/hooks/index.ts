@@ -1,1 +1,1 @@
-export * from './useUserByEmail.ts';
+export * from './useUserByEmail';

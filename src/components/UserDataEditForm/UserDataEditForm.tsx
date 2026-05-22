@@ -9,7 +9,7 @@ type UserFormData = Omit<User, 'id'>;
 export const UserDataEditMode = () => {
    const navigate = useNavigate();
    const { id } = useParams<{ id: string }>();
-   const { data: user, isLoading } = useGetUsersQuery(id ? Number(id) : undefined);
+   const { data: user, isLoading } = useGetUsersQuery(id ? String(id) : undefined);
    const [updateUser] = useUpdateUserMutation();
 
    const [userData, setUserData] = useState<UserFormData>({
@@ -29,7 +29,7 @@ export const UserDataEditMode = () => {
    const onClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       navigate(-1);
-      updateUser({ id: Number(id), ...userData });
+      updateUser({ id: String(id), ...userData });
    };
 
    useEffect(() => {
