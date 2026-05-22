@@ -7,21 +7,22 @@ export const AddTodoForm = () => {
    const [title, setTitle] = useState('');
    const [addTodo] = useAddTodoMutation();
 
-   const onClickHandler = () => {
+   const handleAdd = () => {
       const userId = loadFromLocalStorage<string>('user');
 
-      if (!userId) {
-         console.error('User not found in localStorage');
-         return;
-      }
+      if (!userId || !title.trim()) return;
 
       addTodo({
-         userId: userId,
-         title,
+         userId,
+         title: title.trim(),
          completed: false,
       }).unwrap();
 
       setTitle('');
+   };
+
+   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') handleAdd();
    };
 
    return (
@@ -32,8 +33,9 @@ export const AddTodoForm = () => {
             placeholder='TODO TITLE'
             type="text"
             onChange={e => setTitle(e.target.value)}
+            onKeyDown={handleKeyDown}
          />
-         <button onClick={onClickHandler} className={styles.btn}>Add</button>
+         <button onClick={handleAdd} className={styles.btn}>Add</button>
       </div>
    );
 };

@@ -25,18 +25,6 @@
       "completed": true
     },
     {
-      "id": "947a",
-      "userId": "88f6",
-      "title": "b",
-      "completed": true
-    },
-    {
-      "id": "ba24",
-      "userId": "88f6",
-      "title": "cqazxde",
-      "completed": false
-    },
-    {
       "id": "5a14",
       "userId": "24b1",
       "title": "tets w",
@@ -46,6 +34,12 @@
       "id": "2662",
       "userId": "24b1",
       "title": "wd",
+      "completed": false
+    },
+    {
+      "id": "aafa",
+      "userId": "88f6",
+      "title": "ewf",
       "completed": false
     }
   ],
