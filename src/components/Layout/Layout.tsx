@@ -13,7 +13,9 @@ export const Layout = () => {
    useEffect(() => {
       const userId = loadFromLocalStorage<string>('user');
 
-      if (!userId || (id !== userId && location.pathname !== '/user/create')) {
+      if (location.pathname === '/user/create') return;
+
+      if (!userId || id !== userId) {
          navigate('/login');
       }
    }, [navigate, location.pathname]);
