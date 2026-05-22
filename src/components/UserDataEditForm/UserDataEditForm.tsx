@@ -42,10 +42,10 @@ export const UserDataEditMode = () => {
       !isLoading
          ? (
             <form className={`${styles.editForm} ${isLoading ? styles.loading : ''}`}>
-               <input type="text" value={userData.name} onChange={e => onChangeHandler('name', e.target.value)} />
-               <input type="text" value={userData.email} onChange={e => onChangeHandler('email', e.target.value)} />
-               <input type="text" value={userData.phone} onChange={e => onChangeHandler('phone', e.target.value)} />
-               <input type="text" value={userData.password} onChange={e => onChangeHandler('password', e.target.value)} />
+               <input type="text" placeholder="Name" value={userData.name} onChange={e => onChangeHandler('name', e.target.value)} />
+               <input type="email" placeholder="Email" value={userData.email} onChange={e => onChangeHandler('email', e.target.value)} />
+               <input type="tel" placeholder="Phone" value={userData.phone} onChange={e => onChangeHandler('phone', e.target.value)} />
+               <input type="password" placeholder="Password" value={userData.password} onChange={e => onChangeHandler('password', e.target.value)} />
 
                <button onClick={onClickHandler}>Save</button>
             </form>

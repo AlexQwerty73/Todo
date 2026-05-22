@@ -38,6 +38,9 @@ export const RegistrationForm = () => {
 
    return (
       <div className={styles.formContainer}>
+         <h2 style={{ fontSize: '18px', fontWeight: 500, marginBottom: '20px', color: '#e0e0e0' }}>
+            Create account
+         </h2>
          <form onSubmit={handleSubmit}>
             <LabelName styles={styles} userData={userData} handleChange={handleChange} />
             <LabelEmail styles={styles} userData={userData} handleChange={handleChange} />

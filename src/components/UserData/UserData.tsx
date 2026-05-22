@@ -17,27 +17,24 @@ export const UserData = ({ editMode }: UserDataProps) => {
    const [showPassword, setShowPassword] = useState(false);
 
    return (
-      <div>
-         <div className={`${styles.userData} ${isLoading ? styles.loading : ''}`}>
-            <h3>User Name: {user?.name ?? 'loading...'}</h3>
-            <h3>Email: {user?.email ?? 'loading...'}</h3>
-            <h3>Phone: {user?.phone ?? 'loading...'}</h3>
-            <h3>Password: {showPassword ? user?.password ?? 'loading...' : '********'}</h3>
-            <div className={styles.btns}>
-               <button
-                  className={`${styles.actionButton} ${styles.primary}`}
-                  onClick={() => setShowPassword(!showPassword)}
-               >
-                  {showPassword ? 'hide' : 'show'} password
-               </button>
-               <button
-                  className={`${styles.actionButton} ${styles.secondary}`}
-                  onClick={() => navigate('edit')}
-               >
-                  Edit
-               </button>
-            </div>
-         </div>
+      <div className={styles.userData}>
+         <h3>User Name: <span>{user?.name ?? 'loading...'}</span></h3>
+         <h3>Email: <span>{user?.email ?? 'loading...'}</span></h3>
+         <h3>Phone: <span>{user?.phone ?? 'loading...'}</span></h3>
+         <h3>Password: <span>{showPassword ? user?.password ?? 'loading...' : '********'}</span></h3>
+
+         <button
+            className={`${styles.actionButton} ${styles.primary}`}
+            onClick={() => setShowPassword(!showPassword)}
+         >
+            {showPassword ? 'hide' : 'show'} password
+         </button>
+         <button
+            className={`${styles.actionButton} ${styles.secondary}`}
+            onClick={() => navigate('edit')}
+         >
+            Edit
+         </button>
       </div>
    );
 };
