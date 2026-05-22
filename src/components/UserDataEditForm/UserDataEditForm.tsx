@@ -1,36 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUsersQuery, useUpdateUserMutation } from '../../redux';
+import { User } from '../../redux/usersApi';
 import styles from './UserDataEditMode.module.css';
+
+type UserFormData = Omit<User, 'id'>;
 
 export const UserDataEditMode = () => {
    const navigate = useNavigate();
-   const { id } = useParams();
-   const { data: user = [], isLoading } = useGetUsersQuery(id);
+   const { id } = useParams<{ id: string }>();
+   const { data: user, isLoading } = useGetUsersQuery(id ? Number(id) : undefined);
    const [updateUser] = useUpdateUserMutation();
 
-   const [userData, setUserData] = useState({
+   const [userData, setUserData] = useState<UserFormData>({
       name: '',
       email: '',
       phone: '',
-      password: ''
+      password: '',
    });
 
-   const onChangeHandler = (item, value) => {
+   const onChangeHandler = (item: keyof UserFormData, value: string) => {
       setUserData({
          ...userData,
          [item]: value,
       });
-   }
+   };
 
-   const onClickHandler = (e) => {
+   const onClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       navigate(-1);
-      updateUser(userData);
-   }
+      updateUser({ id: Number(id), ...userData });
+   };
 
    useEffect(() => {
-      if (!isLoading && user) {
+      if (!isLoading && user && !Array.isArray(user)) {
          setUserData(user);
       }
    }, [isLoading, user]);
@@ -44,7 +47,7 @@ export const UserDataEditMode = () => {
                <input type="text" value={userData.phone} onChange={e => onChangeHandler('phone', e.target.value)} />
                <input type="text" value={userData.password} onChange={e => onChangeHandler('password', e.target.value)} />
 
-               <button onClick={e => onClickHandler(e)}>Save</button>
+               <button onClick={onClickHandler}>Save</button>
             </form>
          )
          : 'loading...'

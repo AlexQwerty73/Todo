@@ -3,27 +3,22 @@ import { Layout } from './components';
 import { CreateUserPage, LoginPage, NotFoundPage, UserTodosPage, UserPage, UserEditPage } from './pages';
 
 const App = () => {
-
   return (
     <div className="container">
-
       <Routes>
 
-        <Route path='/' >
+        <Route path='/'>
           <Route index element={<Navigate to="/login" />} />
 
           <Route path='login/' element={<LoginPage />} />
 
           <Route path='user/' element={<Layout />}>
-
             <Route path='create/' element={<CreateUserPage />} />
 
             <Route path=':id/'>
               <Route index element={<UserPage />} />
               <Route path='edit/' element={<UserEditPage />} />
-
               <Route path='todos/' element={<UserTodosPage />} />
-
               <Route path='*' element={<NotFoundPage />} />
             </Route>
 
@@ -34,9 +29,8 @@ const App = () => {
         </Route>
 
       </Routes>
-
-    </div >
+    </div>
   );
-}
+};
 
 export default App;

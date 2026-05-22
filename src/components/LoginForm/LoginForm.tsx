@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginForm.module.css';
 import { useUserByEmail } from '../../hooks';
 import { saveToLocalStorage } from '../../utils';
 
+interface LoginFormData {
+   email: string;
+   password: string;
+}
+
 export const LoginForm = () => {
    const navigate = useNavigate();
 
-   const [formData, setFormData] = useState({
+   const [formData, setFormData] = useState<LoginFormData>({
       email: '',
       password: '',
    });
 
    const userData = useUserByEmail(formData.email);
 
-
-   const handleChange = (e) => {
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
       setFormData((prevData) => ({
          ...prevData,
@@ -23,13 +27,16 @@ export const LoginForm = () => {
       }));
    };
 
-   const handleSubmit = async (e) => {
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-
       try {
+         if (!userData) {
+            console.log('User not found');
+            return;
+         }
          if (formData.password === userData.password) {
-            saveToLocalStorage('user', `${userData.id}`);
-            navigate(`/user/${userData.id}`)
+            saveToLocalStorage('user', String(userData.id));
+            navigate(`/user/${userData.id}`);
          } else {
             console.log('Invalid email or password');
          }
@@ -46,7 +53,6 @@ export const LoginForm = () => {
       <div className={styles.loginForm}>
          <h2>Login</h2>
          <form onSubmit={handleSubmit}>
-
             <label>
                Email:
                <input

@@ -1,6 +1,6 @@
-import React from 'react';
+import { LabelProps } from "./LabelProps";
 
-export const LabelPassword = ({ styles, userData, handleChange }) => {
+export const LabelPassword = ({ styles, userData, handleChange }: LabelProps) => {
    return (
       <label className={styles.formLabel}>Password:
          <input
