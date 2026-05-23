@@ -449,93 +449,42 @@
 }
 
 /* ══════════════════════════════════════
-   ЗОНА ОПАСНОСТИ
+   SETTINGS LINK
 ══════════════════════════════════════ */
-.dangerCard {
+.settingsCard {
    background: #1a1a1e;
-   border: 0.5px solid #2d1a1a;
+   border: 0.5px solid #2a2a2e;
    border-radius: 12px;
    padding: 20px 24px;
    display: flex;
    flex-direction: column;
-   gap: 12px;
+   gap: 10px;
 }
 
-.dangerTitle {
-   font-size: 11px;
-   font-weight: 600;
-   color: #6a3a3a;
-   text-transform: uppercase;
-   letter-spacing: 0.08em;
-}
-
-.dangerDesc {
+.settingsDesc {
    font-size: 12px;
-   color: #555;
+   color: #444;
    line-height: 1.5;
 }
 
-.deleteBtn {
+.settingsLink {
    align-self: flex-start;
    background: transparent;
-   color: #c06060;
-   border: 0.5px solid #5a2a2a;
+   color: #7c5cfc;
+   border: 0.5px solid rgba(124, 92, 252, 0.3);
    border-radius: 6px;
-   padding: 8px 16px;
-   font-size: 13px;
-   cursor: pointer;
-   transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.deleteBtn:hover {
-   background: #2d1a1a;
-   color: #f07070;
-   border-color: #7a3a3a;
-}
-
-.confirmBlock {
-   display: flex;
-   flex-direction: column;
-   gap: 12px;
-}
-
-.confirmText {
-   font-size: 13px;
-   color: #888;
-}
-
-.confirmBtns {
-   display: flex;
-   gap: 8px;
-}
-
-.confirmDelete {
-   background: #5a2a2a;
-   color: #f07070;
-   border: none;
-   border-radius: 6px;
-   padding: 8px 16px;
-   font-size: 13px;
+   padding: 7px 14px;
+   font-size: 12px;
    font-weight: 500;
    cursor: pointer;
-   transition: background 0.15s;
+   transition: background 0.15s, border-color 0.15s;
+   font-family: inherit;
 }
 
-.confirmDelete:hover:not(:disabled) { background: #7a3a3a; }
-.confirmDelete:disabled { opacity: 0.5; cursor: default; }
-
-.cancelBtn {
-   background: transparent;
-   color: #555;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   padding: 8px 16px;
-   font-size: 13px;
-   cursor: pointer;
-   transition: background 0.15s, color 0.15s;
+.settingsLink:hover {
+   background: rgba(124, 92, 252, 0.1);
+   border-color: rgba(124, 92, 252, 0.5);
 }
-
-.cancelBtn:hover { background: #1e1e22; color: #aaa; }
 
 /* ══════════════════════════════════════
    СКЕЛЕТОН

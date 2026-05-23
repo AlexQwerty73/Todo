@@ -94,6 +94,18 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       setEditingSubtaskId(null);
    };
 
+   const openEdit = () => {
+      setInputTitle(todo.title);
+      setInputDescription(todo.description ?? '');
+      setInputDeadline(todo.deadline ?? '');
+      setInputPriority(todo.priority ?? 'medium');
+      setInputRecurrence(todo.recurrence);
+      setInputTags(todo.tags ?? []);
+      setIsEdit(true);
+   };
+
+   const cancelEdit = () => setIsEdit(false);
+
    const onSaveHandler = () => {
       setIsEdit(false);
       const changed = inputTitle !== todo.title
@@ -248,6 +260,7 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                         type="text"
                         value={inputTitle}
                         onChange={e => setInputTitle(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Escape') cancelEdit(); if (e.key === 'Enter') onSaveHandler(); }}
                         className={styles.todoInput}
                         placeholder="Title"
                         autoFocus
@@ -292,7 +305,10 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                         <label className={styles.editDeadlineLabel}>Repeat</label>
                         <RecurrencePicker value={inputRecurrence} onChange={setInputRecurrence} />
                      </div>
-                     <button onClick={onSaveHandler} className={styles.saveBtn}>Save</button>
+                     <div className={styles.editActions}>
+                        <button onClick={onSaveHandler} className={styles.saveBtn}>Save</button>
+                        <button onClick={cancelEdit} className={styles.cancelBtn}>Cancel</button>
+                     </div>
                   </div>
                )}
             </div>
@@ -307,7 +323,7 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
             />
             <label className={styles.customCheckbox} htmlFor={`checkbox-${todo.id}`}></label>
             <button
-               onClick={() => setIsEdit(!isEdit)}
+               onClick={() => isEdit ? cancelEdit() : openEdit()}
                className={`${styles.btn} ${isEdit ? styles.btnActive : ''}`}
             >
                ✎

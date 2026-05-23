@@ -2,12 +2,10 @@ import { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
    useGetUsersQuery, useGetTodosByUserIdQuery, useGetHistoryQuery,
-   useDeleteUserMutation, useDelTodoMutation, useDeleteHistoryMutation,
 } from '../../redux';
 import { User } from '../../redux/usersApi';
 import styles from './userPage.module.css';
 import html2canvas from 'html2canvas';
-import { removeKeyFromLocalStorage } from '../../utils';
 import { getTagColor } from '../TagPicker';
 
 // ── Иконки для типов активности ──────────────────────────────────────────────
@@ -62,16 +60,10 @@ export const UserData = () => {
    const { data: todos   = [] }      = useGetTodosByUserIdQuery(id ?? '');
    const { data: history = [] }      = useGetHistoryQuery(id ?? '');
 
-   const [deleteUser]    = useDeleteUserMutation();
-   const [delTodo]       = useDelTodoMutation();
-   const [deleteHistory] = useDeleteHistoryMutation();
-
    const user = !Array.isArray(data) ? data as User : null;
 
-   const [showPassword,       setShowPassword]       = useState(false);
-   const [showDeleteConfirm,  setShowDeleteConfirm]  = useState(false);
-   const [deleting,           setDeleting]           = useState(false);
-   const [exportingPng,       setExportingPng]       = useState(false);
+   const [showPassword, setShowPassword] = useState(false);
+   const [exportingPng, setExportingPng] = useState(false);
 
    const printRef = useRef<HTMLDivElement>(null);
 
@@ -188,24 +180,6 @@ export const UserData = () => {
          const a = document.createElement('a');
          a.href = url; a.download = 'tasks.png'; a.click();
       } finally { setExportingPng(false); }
-   };
-
-   // ── Удаление аккаунта ───────────────────────────────────────────────────
-   const handleDeleteAccount = async () => {
-      setDeleting(true);
-      try {
-         await Promise.all([
-            ...todos.map(t   => delTodo(t.id).unwrap()),
-            ...history.map(h => deleteHistory(h.id).unwrap()),
-         ]);
-         await deleteUser(id ?? '').unwrap();
-         removeKeyFromLocalStorage('user');
-         navigate('/login');
-      } catch (err) {
-         console.error('Failed to delete account:', err);
-         setDeleting(false);
-         setShowDeleteConfirm(false);
-      }
    };
 
    // ── Скелетон ────────────────────────────────────────────────────────────
@@ -447,42 +421,15 @@ export const UserData = () => {
                </div>
             </div>
 
-            {/* ══ Опасная зона ══ */}
-            <div className={styles.dangerCard}>
-               <p className={styles.dangerTitle}>⚠ Danger zone</p>
-               {!showDeleteConfirm ? (
-                  <>
-                     <p className={styles.dangerDesc}>
-                        Permanently deletes your account, all tasks, and activity history.
-                        This action cannot be undone.
-                     </p>
-                     <button className={styles.deleteBtn} onClick={() => setShowDeleteConfirm(true)}>
-                        Delete account
-                     </button>
-                  </>
-               ) : (
-                  <div className={styles.confirmBlock}>
-                     <p className={styles.confirmText}>
-                        Are you absolutely sure? All your data will be permanently removed.
-                     </p>
-                     <div className={styles.confirmBtns}>
-                        <button
-                           className={styles.confirmDelete}
-                           onClick={handleDeleteAccount}
-                           disabled={deleting}
-                        >
-                           {deleting ? 'Deleting…' : 'Yes, delete everything'}
-                        </button>
-                        <button
-                           className={styles.cancelBtn}
-                           onClick={() => setShowDeleteConfirm(false)}
-                           disabled={deleting}
-                        >
-                           Cancel
-                        </button>
-                     </div>
-                  </div>
-               )}
+            {/* ══ Settings link ══ */}
+            <div className={styles.settingsCard}>
+               <p className={styles.cardTitle}>Account settings</p>
+               <p className={styles.settingsDesc}>
+                  Manage task defaults, history display, and account deletion.
+               </p>
+               <button className={styles.settingsLink} onClick={() => navigate('settings')}>
+                  Open Settings →
+               </button>
             </div>
 
          </div>{/* /colRight */}

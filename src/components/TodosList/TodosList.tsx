@@ -10,7 +10,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { TodoItem } from '../TodoItem';
 import { Todo } from '../../redux/todosApi';
-import { useUpdateTodoMutation } from '../../redux';
+import { useUpdateTodoMutation, useDelTodoMutation, useAddHistoryMutation } from '../../redux';
+import { loadFromLocalStorage } from '../../utils';
 import { getTagColor } from '../TagPicker';
 import styles from './todoList.module.css';
 
@@ -72,6 +73,9 @@ export const TodosList = ({ todos }: TodosListProps) => {
    const [page, setPage]         = useState(1);
 
    const [updateTodo] = useUpdateTodoMutation();
+   const [delTodo]    = useDelTodoMutation();
+   const [addHistory] = useAddHistoryMutation();
+   const userId = loadFromLocalStorage<string>('user') ?? '';
 
    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -89,6 +93,21 @@ export const TodosList = ({ todos }: TodosListProps) => {
          if (todo.order !== i) updateTodo({ ...todo, order: i });
       });
    }, [updateTodo]);
+
+   const handleCompleteAll = () => {
+      filtered.filter(t => !t.completed).forEach(t =>
+         updateTodo({ ...t, completed: true })
+      );
+   };
+
+   const handleClearCompleted = () => {
+      const ts = new Date().toISOString();
+      filtered.filter(t => t.completed).forEach(t => {
+         delTodo(t.id);
+         addHistory({ userId, action: 'deleted', title: t.title, timestamp: ts });
+      });
+      setPage(1);
+   };
 
    // ── скелетон — после всех хуков ──
    if (!todos) return <Skeleton />;
@@ -206,12 +225,26 @@ export const TodosList = ({ todos }: TodosListProps) => {
             ))}
          </div>
 
-         {/* ── Счётчик + фильтр ── */}
+         {/* ── Счётчик + bulk actions + фильтр ── */}
          <div className={styles.header}>
             <span className={styles.counter}>
                {completedCount} of {todos.length} completed
                {sorted.length !== todos.length && ` · ${sorted.length} shown`}
             </span>
+
+            <div className={styles.bulkActions}>
+               {filtered.some(t => !t.completed) && (
+                  <button className={styles.bulkBtn} onClick={handleCompleteAll}>
+                     ✓ Complete all
+                  </button>
+               )}
+               {filtered.some(t => t.completed) && (
+                  <button className={`${styles.bulkBtn} ${styles.bulkDel}`} onClick={handleClearCompleted}>
+                     ✕ Clear done
+                  </button>
+               )}
+            </div>
+
             <div className={styles.filters}>
                {(['all', 'active', 'completed'] as Filter[]).map(f => (
                   <button key={f} onClick={() => handleFilter(f)}

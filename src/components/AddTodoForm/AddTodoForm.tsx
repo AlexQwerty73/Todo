@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './addTodoForm.module.css';
 import { useAddTodoMutation, useAddHistoryMutation } from '../../redux';
-import { loadFromLocalStorage } from '../../utils';
+import { loadFromLocalStorage, loadSettings } from '../../utils';
 import { useToast } from '../../context/ToastContext';
 import { Priority, Recurrence } from '../../redux/todosApi';
 import { RecurrencePicker } from '../RecurrencePicker';
@@ -14,10 +14,12 @@ const priorityOptions: { value: Priority; label: string; color: string }[] = [
 ];
 
 export const AddTodoForm = () => {
+   const userId = loadFromLocalStorage<string>('user') ?? '';
+
    const [title,      setTitle]      = useState('');
    const [description,setDescription]= useState('');
    const [deadline,   setDeadline]   = useState('');
-   const [priority,   setPriority]   = useState<Priority>('medium');
+   const [priority,   setPriority]   = useState<Priority>(() => loadSettings(userId).defaultPriority);
    const [recurrence, setRecurrence] = useState<Recurrence | undefined>(undefined);
    const [tags,       setTags]       = useState<string[]>([]);
    const [expanded,   setExpanded]   = useState(false);
@@ -27,7 +29,6 @@ export const AddTodoForm = () => {
    const { showToast } = useToast();
 
    const handleAdd = () => {
-      const userId = loadFromLocalStorage<string>('user');
       if (!userId || !title.trim()) return;
 
       addTodo({
@@ -54,7 +55,7 @@ export const AddTodoForm = () => {
       setTitle('');
       setDescription('');
       setDeadline('');
-      setPriority('medium');
+      setPriority(loadSettings(userId).defaultPriority);
       setRecurrence(undefined);
       setTags([]);
       setExpanded(false);

@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './DayModal.module.css';
 import { Todo, Subtask, Priority, Recurrence } from '../../redux/todosApi';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { useToast } from '../../context/ToastContext';
-import { loadFromLocalStorage, getRecurrenceLabel } from '../../utils';
+import { loadFromLocalStorage, getRecurrenceLabel, loadSettings } from '../../utils';
 import { RecurrencePicker } from '../../components/RecurrencePicker';
 import { TagPicker, getTagColor } from '../../components/TagPicker';
 
@@ -35,11 +35,18 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
 
    const userId = loadFromLocalStorage<string>('user') ?? '';
 
+   // ESC closes modal
+   useEffect(() => {
+      const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+      window.addEventListener('keydown', handler);
+      return () => window.removeEventListener('keydown', handler);
+   }, [onClose]);
+
    const [showAdd, setShowAdd] = useState(false);
    const [newTitle, setNewTitle] = useState('');
    const [newDesc, setNewDesc] = useState('');
    const [newDeadline, setNewDeadline] = useState(toDatetimeLocal(date));
-   const [newPriority, setNewPriority] = useState<Priority>('medium');
+   const [newPriority, setNewPriority] = useState<Priority>(() => loadSettings(userId).defaultPriority);
    const [newRecurrence, setNewRecurrence] = useState<Recurrence | undefined>(undefined);
    const [newTags, setNewTags] = useState<string[]>([]);
 
@@ -86,7 +93,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       setNewTitle('');
       setNewDesc('');
       setNewDeadline(toDatetimeLocal(date));
-      setNewPriority('medium');
+      setNewPriority(loadSettings(userId).defaultPriority);
       setNewRecurrence(undefined);
       setNewTags([]);
       setShowAdd(false);

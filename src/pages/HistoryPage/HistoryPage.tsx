@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetHistoryQuery } from '../../redux';
-import { loadFromLocalStorage } from '../../utils';
-import { UserSettings, DEFAULT_SETTINGS, getSettingsKey } from '../SettingsPage/SettingsPage';
+import { loadSettings } from '../../utils';
 import styles from './HistoryPage.module.css';
 
 const ACTION_META = {
@@ -31,8 +30,7 @@ const formatTime = (date: Date) =>
 export const HistoryPage = () => {
    const { id } = useParams<{ id: string }>();
    const { data: history, isLoading } = useGetHistoryQuery(id ?? '');
-   const saved      = loadFromLocalStorage<Partial<UserSettings>>(getSettingsKey(id ?? ''));
-   const pageSize   = saved?.historyPageSize ?? DEFAULT_SETTINGS.historyPageSize;
+   const pageSize = loadSettings(id ?? '').historyPageSize;
 
    const [page,   setPage]   = useState(1);
    const [filter, setFilter] = useState<ActionKey | 'all'>('all');

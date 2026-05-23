@@ -7,22 +7,17 @@ import {
    useDelTodoMutation,
    useGetTodosByUserIdQuery,
 } from '../../redux';
-import { loadFromLocalStorage, saveToLocalStorage, removeKeyFromLocalStorage } from '../../utils';
+import {
+   loadFromLocalStorage,
+   saveToLocalStorage,
+   removeKeyFromLocalStorage,
+   loadSettings,
+   getSettingsKey,
+   UserSettings,
+} from '../../utils';
 import { Priority } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
 import styles from './SettingsPage.module.css';
-
-export interface UserSettings {
-   defaultPriority: Priority;
-   historyPageSize: number;
-}
-
-export const DEFAULT_SETTINGS: UserSettings = {
-   defaultPriority: 'medium',
-   historyPageSize: 12,
-};
-
-export const getSettingsKey = (userId: string) => `settings:${userId}`;
 
 const priorityColors: Record<Priority, string> = {
    high: '#f07070',
@@ -44,13 +39,12 @@ export const SettingsPage = () => {
    const userId = id ?? '';
    const key    = getSettingsKey(userId);
 
-   const saved   = loadFromLocalStorage<Partial<UserSettings>>(key);
-   const initial = { ...DEFAULT_SETTINGS, ...saved };
+   const initial = loadSettings(userId);
 
-   const [defaultPriority,  setDefaultPriority]  = useState<Priority>(initial.defaultPriority);
-   const [historyPageSize,  setHistoryPageSize]   = useState<number>(initial.historyPageSize);
-   const [confirmDelete,    setConfirmDelete]      = useState(false);
-   const [confirmClear,     setConfirmClear]       = useState(false);
+   const [defaultPriority, setDefaultPriority] = useState<Priority>(initial.defaultPriority);
+   const [historyPageSize, setHistoryPageSize]  = useState<number>(initial.historyPageSize);
+   const [confirmDelete,   setConfirmDelete]     = useState(false);
+   const [confirmClear,    setConfirmClear]      = useState(false);
 
    const { data: history = [] } = useGetHistoryQuery(userId);
    const { data: todos   = [] } = useGetTodosByUserIdQuery(userId);
@@ -60,7 +54,8 @@ export const SettingsPage = () => {
    const [delTodo]       = useDelTodoMutation();
 
    const handleSave = () => {
-      saveToLocalStorage(key, { defaultPriority, historyPageSize });
+      const updated: UserSettings = { defaultPriority, historyPageSize };
+      saveToLocalStorage(key, updated);
       showToast('Settings saved ✓');
    };
 
@@ -102,7 +97,7 @@ export const SettingsPage = () => {
                <div className={styles.row}>
                   <div className={styles.rowLabel}>
                      <span className={styles.rowTitle}>Default priority</span>
-                     <span className={styles.rowHint}>Pre-selected when the form opens</span>
+                     <span className={styles.rowHint}>Pre-selected when the add form opens</span>
                   </div>
                   <div className={styles.priorityBtns}>
                      {(['high', 'medium', 'low'] as Priority[]).map(p => (
