@@ -1,0 +1,236 @@
+/* ── Page ── */
+.page {
+   display: flex;
+   flex-direction: column;
+   gap: 24px;
+   max-width: 680px;
+}
+
+/* ── Header ── */
+.header {
+   display: flex;
+   align-items: flex-end;
+   justify-content: space-between;
+}
+
+.titleArea {
+   display: flex;
+   flex-direction: column;
+   gap: 3px;
+}
+
+.pageLabel {
+   font-size: 11px;
+   color: #444;
+   text-transform: uppercase;
+   letter-spacing: 0.08em;
+   font-weight: 600;
+}
+
+.title {
+   font-size: 26px;
+   font-weight: 700;
+   color: #ebebeb;
+   letter-spacing: -0.03em;
+   line-height: 1;
+}
+
+/* ── Section ── */
+.section {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.sectionHeader {
+   display: flex;
+   flex-direction: column;
+   gap: 3px;
+}
+
+.sectionTitle {
+   font-size: 12px;
+   font-weight: 600;
+   color: #888;
+   text-transform: uppercase;
+   letter-spacing: 0.07em;
+}
+
+.sectionDesc {
+   font-size: 12px;
+   color: #3a3a3e;
+}
+
+/* ── Card ── */
+.card {
+   background: #111114;
+   border: 0.5px solid #1e1e22;
+   border-radius: 10px;
+   overflow: hidden;
+}
+
+/* ── Row ── */
+.row {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 20px;
+   padding: 18px 20px;
+}
+
+.rowLabel {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+}
+
+.rowTitle {
+   font-size: 13px;
+   color: #d0d0d0;
+   font-weight: 500;
+}
+
+.rowHint {
+   font-size: 11px;
+   color: #3a3a3e;
+}
+
+/* ── Priority buttons ── */
+.priorityBtns { display: flex; gap: 6px; }
+
+.priorityBtn {
+   padding: 6px 14px;
+   border-radius: 6px;
+   border: 0.5px solid;
+   font-size: 11px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: all 0.15s;
+   text-transform: capitalize;
+   font-family: inherit;
+   display: flex;
+   align-items: center;
+   gap: 4px;
+}
+
+/* ── Size buttons ── */
+.sizeBtns { display: flex; gap: 4px; }
+
+.sizeBtn {
+   width: 42px;
+   height: 32px;
+   background: transparent;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   color: #555;
+   font-size: 12px;
+   cursor: pointer;
+   transition: all 0.15s;
+   font-family: inherit;
+}
+
+.sizeBtn:hover { background: #1a1a1e; color: #aaa; border-color: #3a3a3e; }
+
+.sizeBtnActive {
+   background: rgba(124, 92, 252, 0.12);
+   border-color: #7c5cfc;
+   color: #c0b0ff;
+}
+
+/* ── Save ── */
+.saveRow { display: flex; }
+
+.saveBtn {
+   background: #7c5cfc;
+   color: #fff;
+   border: none;
+   border-radius: 8px;
+   padding: 10px 24px;
+   font-size: 13px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: background 0.15s, box-shadow 0.15s;
+   font-family: inherit;
+}
+
+.saveBtn:hover {
+   background: #6a4ae0;
+   box-shadow: 0 2px 12px rgba(124, 92, 252, 0.4);
+}
+
+/* ── Danger zone ── */
+.dangerTitle { color: #c04040; }
+
+.dangerCard { border-color: #251a1a; }
+
+.dangerRow {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 20px;
+   padding: 18px 20px;
+}
+
+.dangerDivider {
+   height: 0.5px;
+   background: #1e1e22;
+}
+
+.dangerBtn {
+   background: transparent;
+   border: 0.5px solid #3a1e1e;
+   border-radius: 6px;
+   color: #c04040;
+   font-size: 12px;
+   padding: 7px 16px;
+   cursor: pointer;
+   transition: all 0.15s;
+   white-space: nowrap;
+   font-family: inherit;
+   flex-shrink: 0;
+}
+
+.dangerBtn:hover { background: #2d1a1a; border-color: #c04040; color: #f07070; }
+.dangerBtn:disabled { opacity: 0.3; cursor: default; }
+
+/* ── Confirm inline ── */
+.confirmRow {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   flex-shrink: 0;
+}
+
+.confirmText {
+   font-size: 11px;
+   color: #f07070;
+   white-space: nowrap;
+}
+
+.dangerConfirmBtn {
+   background: #c04040;
+   color: #fff;
+   border: none;
+   border-radius: 6px;
+   padding: 6px 14px;
+   font-size: 12px;
+   cursor: pointer;
+   transition: background 0.15s;
+   font-family: inherit;
+}
+
+.dangerConfirmBtn:hover { background: #a03030; }
+
+.cancelBtn {
+   background: transparent;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   color: #555;
+   font-size: 12px;
+   padding: 6px 12px;
+   cursor: pointer;
+   transition: all 0.15s;
+   font-family: inherit;
+}
+
+.cancelBtn:hover { background: #1a1a1e; color: #aaa; border-color: #3a3a3e; }

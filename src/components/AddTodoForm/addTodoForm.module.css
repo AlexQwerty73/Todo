@@ -1,101 +1,135 @@
+/* ── Обёртка ── */
 .wrapper {
-   margin-bottom: 20px;
+   display: flex;
+   flex-direction: column;
+   gap: 0;
 }
 
+/* ── Строка ввода ── */
 .addTodoForm {
    display: flex;
    gap: 8px;
+   align-items: stretch;
 }
 
 .inputAdd {
    flex: 1;
-   padding: 9px 12px;
+   padding: 11px 14px;
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
+   border-radius: 8px;
    color: #e0e0e0;
    font-size: 14px;
-   transition: border-color 0.15s;
+   outline: none;
+   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .inputAdd:focus {
-   outline: none;
    border-color: #7c5cfc;
+   box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.08);
 }
 
 .inputAdd::placeholder {
-   color: #444;
+   color: #3a3a3e;
 }
 
+/* ── Кнопка раскрытия ── */
 .expandBtn {
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   color: #666;
-   font-size: 18px;
-   width: 36px;
+   border-radius: 8px;
+   color: #555;
+   font-size: 16px;
+   width: 40px;
    cursor: pointer;
-   transition: color 0.15s, transform 0.2s;
+   transition: color 0.15s, border-color 0.15s, transform 0.2s;
    display: flex;
    align-items: center;
    justify-content: center;
+   flex-shrink: 0;
 }
 
 .expandBtn:hover {
-   color: #e0e0e0;
+   color: #aaa;
+   border-color: #3a3a3e;
 }
 
 .expandBtnOpen {
    transform: rotate(90deg);
    color: #7c5cfc;
-   border-color: #7c5cfc;
+   border-color: #7c5cfc40;
+   background: rgba(124, 92, 252, 0.06);
 }
 
+/* ── Кнопка «добавить» ── */
 .btn {
    background: #7c5cfc;
    color: #fff;
    border: none;
-   border-radius: 6px;
-   padding: 0 16px;
+   border-radius: 8px;
+   padding: 0 20px;
    font-size: 14px;
    font-weight: 500;
    cursor: pointer;
-   transition: background 0.15s;
+   transition: background 0.15s, box-shadow 0.15s;
    white-space: nowrap;
+   flex-shrink: 0;
 }
 
 .btn:hover {
    background: #6a4ae0;
+   box-shadow: 0 2px 12px rgba(124, 92, 252, 0.35);
 }
 
+/* ── Панель деталей ── */
 .details {
-   margin-top: 8px;
+   margin-top: 6px;
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   padding: 12px;
+   border-radius: 8px;
+   padding: 14px 16px;
    display: flex;
    flex-direction: column;
-   gap: 10px;
-   animation: slideDown 0.2s ease;
+   gap: 12px;
+   animation: slideDown 0.18s ease;
 }
 
 @keyframes slideDown {
-   from { opacity: 0; transform: translateY(-6px); }
-   to { opacity: 1; transform: translateY(0); }
+   from { opacity: 0; transform: translateY(-8px); }
+   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Приоритет ── */
+.priorityRow {
+   display: flex;
+   gap: 6px;
+}
+
+.priorityBtn {
+   flex: 1;
+   padding: 6px 0;
+   border-radius: 6px;
+   border: 0.5px solid;
+   font-size: 12px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: all 0.15s;
+   letter-spacing: 0.02em;
+}
+
+/* ── Текстовое поле ── */
 .textarea {
    background: #0e0e10;
    border: 0.5px solid #2a2a2e;
    border-radius: 6px;
    padding: 9px 12px;
    color: #e0e0e0;
-   font-size: 14px;
+   font-size: 13px;
    resize: none;
    outline: none;
    transition: border-color 0.15s;
    font-family: inherit;
+   line-height: 1.5;
 }
 
 .textarea:focus {
@@ -103,21 +137,24 @@
 }
 
 .textarea::placeholder {
-   color: #444;
+   color: #333;
 }
 
-.deadlineRow {
+/* ── Строка с лейблом ── */
+.fieldRow {
    display: flex;
    align-items: center;
-   gap: 12px;
+   gap: 10px;
 }
 
-.deadlineLabel {
-   font-size: 13px;
-   color: #888;
+.fieldLabel {
+   font-size: 12px;
+   color: #666;
    white-space: nowrap;
+   min-width: 50px;
 }
 
+/* ── Дата ── */
 .deadlineInput {
    background: #0e0e10;
    border: 0.5px solid #2a2a2e;
@@ -127,22 +164,17 @@
    font-size: 13px;
    outline: none;
    transition: border-color 0.15s;
+   color-scheme: dark;
+   flex: 1;
 }
 
 .deadlineInput:focus {
    border-color: #7c5cfc;
 }
-.priorityRow {
-   display: flex;
-   gap: 6px;
-}
 
-.priorityBtn {
-   flex: 1;
-   padding: 5px 0;
-   border-radius: 5px;
-   border: 0.5px solid;
-   font-size: 12px;
-   cursor: pointer;
-   transition: all 0.15s;
+/* ── Разделитель ── */
+.divider {
+   height: 0.5px;
+   background: #2a2a2e;
+   margin: 2px 0;
 }

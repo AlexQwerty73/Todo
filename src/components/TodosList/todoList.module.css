@@ -1,83 +1,239 @@
+/* ── Поиск ── */
+.searchRow {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   margin-bottom: 10px;
+}
+
+.searchInput {
+   flex: 1;
+   padding: 9px 14px;
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 8px;
+   color: #e0e0e0;
+   font-size: 13px;
+   outline: none;
+   transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.searchInput:focus {
+   border-color: #7c5cfc;
+   box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.08);
+}
+
+.searchInput::placeholder { color: #333; }
+
+.clearBtn {
+   background: transparent;
+   border: none;
+   color: #444;
+   font-size: 13px;
+   cursor: pointer;
+   padding: 4px 8px;
+   transition: color 0.15s;
+   border-radius: 4px;
+}
+
+.clearBtn:hover { color: #aaa; }
+
+/* ── Теги ── */
+.tagFilters {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 5px;
+   margin-bottom: 10px;
+}
+
+.tagFilterBtn {
+   padding: 3px 10px;
+   border-radius: 5px;
+   border: 0.5px solid;
+   font-size: 11px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: all 0.15s;
+   letter-spacing: 0.02em;
+}
+
+/* ── Сортировка ── */
+.sortRow {
+   display: flex;
+   align-items: center;
+   gap: 4px;
+   margin-bottom: 12px;
+   flex-wrap: wrap;
+}
+
+.sortLabel {
+   font-size: 11px;
+   color: #444;
+   margin-right: 2px;
+   text-transform: uppercase;
+   letter-spacing: 0.06em;
+}
+
+.sortBtn {
+   padding: 4px 10px;
+   border-radius: 5px;
+   border: 0.5px solid #242428;
+   background: transparent;
+   color: #555;
+   font-size: 11px;
+   cursor: pointer;
+   transition: all 0.15s;
+   white-space: nowrap;
+}
+
+.sortBtn:hover {
+   color: #ccc;
+   border-color: #3a3a3e;
+   background: #1e1e22;
+}
+
+.sortBtnActive {
+   border-color: #7c5cfc60;
+   color: #7c5cfc;
+   background: rgba(124, 92, 252, 0.08);
+}
+
+/* ── DnD ── */
+.itemRow {
+   display: flex;
+   align-items: flex-start;
+   gap: 6px;
+}
+
+.itemBody { flex: 1; min-width: 0; }
+
+.dragHandle {
+   flex-shrink: 0;
+   padding: 14px 2px;
+   color: #333;
+   font-size: 16px;
+   cursor: grab;
+   user-select: none;
+   transition: color 0.15s;
+   touch-action: none;
+   line-height: 1;
+}
+
+.dragHandle:hover { color: #7c5cfc; }
+.dragHandle:active { cursor: grabbing; }
+
+/* ── Скелетон ── */
+.skeletonList { display: flex; flex-direction: column; gap: 6px; }
+
+.skeletonItem {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 8px;
+   padding: 14px 16px;
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.skeletonBar {
+   width: 4px;
+   height: 100%;
+   position: absolute;
+   left: 0;
+   top: 0;
+}
+
+.skeletonLine {
+   height: 10px;
+   border-radius: 4px;
+   background: linear-gradient(90deg, #1e1e22 25%, #252528 50%, #1e1e22 75%);
+   background-size: 200% 100%;
+   animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+   0%   { background-position: 200% 0; }
+   100% { background-position: -200% 0; }
+}
+
+/* ── Шапка (счётчик + фильтры) ── */
 .header {
    display: flex;
    align-items: center;
    justify-content: space-between;
-   margin-bottom: 12px;
+   margin-bottom: 10px;
 }
 
 .counter {
-   font-size: 13px;
-   color: #555;
+   font-size: 12px;
+   color: #444;
+   font-variant-numeric: tabular-nums;
 }
 
-.filters {
-   display: flex;
-   gap: 4px;
-}
+.filters { display: flex; gap: 3px; }
 
 .filterBtn {
    background: transparent;
-   border: 0.5px solid #2a2a2e;
+   border: 0.5px solid #242428;
    border-radius: 5px;
-   color: #666;
+   color: #555;
    font-size: 12px;
-   padding: 4px 10px;
+   padding: 4px 12px;
    cursor: pointer;
-   transition: background 0.15s, color 0.15s;
+   transition: background 0.15s, color 0.15s, border-color 0.15s;
    text-transform: capitalize;
 }
 
 .filterBtn:hover {
    background: #1e1e22;
-   color: #e0e0e0;
+   color: #ccc;
+   border-color: #3a3a3e;
 }
 
 .filterBtn.active {
    background: #1e1e22;
    color: #e0e0e0;
-   border-color: #7c5cfc;
+   border-color: #7c5cfc60;
 }
 
+/* ── Список ── */
 .list {
    display: flex;
    flex-direction: column;
-   gap: 6px;
+   gap: 5px;
 }
 
-.loading {
-   font-size: 13px;
-   color: #555;
-}
-
+/* ── Пусто ── */
 .empty {
    display: flex;
    flex-direction: column;
    align-items: center;
-   padding: 40px 0;
-   gap: 8px;
+   padding: 48px 0;
+   gap: 10px;
 }
 
 .emptyIcon {
-   font-size: 32px;
-   color: #333;
+   font-size: 36px;
+   color: #2a2a2e;
 }
 
 .empty p {
    font-size: 14px;
-   color: #555;
+   color: #444;
 }
 
 .emptyHint {
    font-size: 12px;
-   color: #444 !important;
+   color: #333 !important;
 }
 
+/* ── Пагинация ── */
 .pagination {
    display: flex;
    align-items: center;
    justify-content: center;
    gap: 4px;
-   margin-top: 16px;
+   margin-top: 18px;
 }
 
 .pageBtn {
@@ -87,33 +243,34 @@
    align-items: center;
    justify-content: center;
    background: transparent;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 5px;
-   color: #666;
+   border: 0.5px solid #242428;
+   border-radius: 6px;
+   color: #555;
    font-size: 13px;
    cursor: pointer;
-   transition: background 0.15s, color 0.15s;
+   transition: background 0.15s, color 0.15s, border-color 0.15s;
    padding: 0 6px;
 }
 
 .pageBtn:hover:not(:disabled) {
    background: #1e1e22;
-   color: #e0e0e0;
+   color: #ccc;
+   border-color: #3a3a3e;
 }
 
 .pageBtn:disabled {
-   opacity: 0.3;
+   opacity: 0.25;
    cursor: default;
 }
 
 .pageBtnActive {
    background: #1e1e22;
-   border-color: #7c5cfc;
+   border-color: #7c5cfc60;
    color: #e0e0e0;
 }
 
 .pageDots {
    font-size: 13px;
-   color: #444;
+   color: #333;
    padding: 0 4px;
 }

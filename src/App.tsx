@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './components';
-import { CreateUserPage, LoginPage, NotFoundPage, UserTodosPage, UserPage, UserEditPage, HistoryPage, CalendarPage } from './pages';
+import { CreateUserPage, LoginPage, NotFoundPage, UserTodosPage, UserPage, UserEditPage, HistoryPage, CalendarPage, SettingsPage } from './pages';
 
 const App = () => {
   return (
@@ -17,6 +17,7 @@ const App = () => {
               <Route path='todos/' element={<UserTodosPage />} />
               <Route path='history/' element={<HistoryPage />} />
               <Route path='calendar/' element={<CalendarPage />} />
+              <Route path='settings/' element={<SettingsPage />} />
               <Route path='*' element={<NotFoundPage />} />
             </Route>
             <Route path='*' element={<NotFoundPage />} />

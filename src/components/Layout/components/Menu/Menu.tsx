@@ -20,6 +20,7 @@ export const Menu = () => {
          <li><NavLink to={`/user/${id}/`} end className={({ isActive }) => `${styles.item} ${isActive ? styles.active : ''}`}>User</NavLink></li>
          <li><NavLink to={`/user/${id}/history`} className={({ isActive }) => `${styles.item} ${isActive ? styles.active : ''}`}>History</NavLink></li>
          <li><NavLink to={`/user/${id}/calendar`} className={({ isActive }) => `${styles.item} ${isActive ? styles.active : ''}`}>Calendar</NavLink></li>
+         <li><NavLink to={`/user/${id}/settings`} className={({ isActive }) => `${styles.item} ${isActive ? styles.active : ''}`}>Settings</NavLink></li>
       </ul>
    );
 };

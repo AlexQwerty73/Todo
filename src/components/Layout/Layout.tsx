@@ -8,16 +8,13 @@ export const Layout = () => {
    const location = useLocation();
    const navigate = useNavigate();
    const { id } = useParams<{ id: string }>();
-   const showLayout = location.pathname !== '/user/create';
+   const AUTH_PATHS = ['/user/create', '/login'];
+   const showLayout = !AUTH_PATHS.includes(location.pathname);
 
    useEffect(() => {
       const userId = loadFromLocalStorage<string>('user');
-
-      if (location.pathname === '/user/create') return;
-
-      if (!userId || id !== userId) {
-         navigate('/login');
-      }
+      if (AUTH_PATHS.includes(location.pathname)) return;
+      if (!userId || id !== userId) navigate('/login');
    }, [navigate, location.pathname]);
 
    return (
@@ -28,7 +25,7 @@ export const Layout = () => {
             </div>
          )}
 
-         <div className={styles.outLet}>
+         <div className={showLayout ? styles.outLet : styles.authOutlet}>
             <Outlet />
          </div>
       </>

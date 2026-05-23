@@ -1,0 +1,106 @@
+/* ── Страница ── */
+.page {
+   display: flex;
+   flex-direction: column;
+   gap: 24px;
+}
+
+/* ── Шапка ── */
+.header {
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   gap: 16px;
+   flex-wrap: wrap;
+}
+
+.headerLeft {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+}
+
+.greeting {
+   font-size: 22px;
+   font-weight: 600;
+   color: #e0e0e0;
+   letter-spacing: -0.02em;
+   line-height: 1.2;
+}
+
+.dateText {
+   font-size: 13px;
+   color: #555;
+}
+
+/* ── Статистика ── */
+.stats {
+   display: flex;
+   align-items: center;
+   gap: 20px;
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 10px;
+   padding: 12px 20px;
+   flex-shrink: 0;
+}
+
+.stat {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 3px;
+}
+
+.statVal {
+   font-size: 20px;
+   font-weight: 700;
+   color: #e0e0e0;
+   line-height: 1;
+   font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+   font-size: 10px;
+   color: #555;
+   text-transform: uppercase;
+   letter-spacing: 0.08em;
+}
+
+.statDivider {
+   width: 0.5px;
+   height: 30px;
+   background: #2a2a2e;
+   flex-shrink: 0;
+}
+
+/* ── Прогресс-бар ── */
+.progressWrap {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+}
+
+.progressTrack {
+   flex: 1;
+   height: 3px;
+   background: #2a2a2e;
+   border-radius: 4px;
+   overflow: hidden;
+}
+
+.progressFill {
+   height: 100%;
+   background: linear-gradient(90deg, #7c5cfc, #5ca8fc);
+   border-radius: 4px;
+   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+   min-width: 6px;
+}
+
+.progressLabel {
+   font-size: 11px;
+   color: #555;
+   white-space: nowrap;
+   min-width: 72px;
+   text-align: right;
+}

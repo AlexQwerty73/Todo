@@ -5,6 +5,7 @@ import { Todo, Priority, Subtask, Recurrence } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
 import { loadFromLocalStorage, getRecurrenceLabel } from '../../utils';
 import { RecurrencePicker } from '../RecurrencePicker';
+import { TagPicker, getTagColor } from '../TagPicker';
 
 interface TodoItemProps {
    index: number;
@@ -28,6 +29,7 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
    const [inputDeadline, setInputDeadline] = useState(todo.deadline ?? '');
    const [inputPriority, setInputPriority] = useState<Priority>(todo.priority ?? 'medium');
    const [inputRecurrence, setInputRecurrence] = useState<Recurrence | undefined>(todo.recurrence);
+   const [inputTags, setInputTags] = useState<string[]>(todo.tags ?? []);
    const [subtasks, setSubtasks] = useState<Subtask[]>(todo.subtasks ?? []);
    const [newSubtask, setNewSubtask] = useState('');
    const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
@@ -38,6 +40,7 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
    // Синхронизируем локальный стейт с пропсами когда RTK Query перезагружает данные
    useEffect(() => { setSubtasks(todo.subtasks ?? []); }, [todo.subtasks]);
    useEffect(() => { setCheckBox(todo.completed); }, [todo.completed]);
+   useEffect(() => { setInputTags(todo.tags ?? []); }, [todo.tags]);
 
    const [updateTodo] = useUpdateTodoMutation();
    const [delTodo] = useDelTodoMutation();
@@ -97,7 +100,8 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
          || inputDescription !== (todo.description ?? '')
          || inputDeadline !== (todo.deadline ?? '')
          || inputPriority !== (todo.priority ?? 'medium')
-         || JSON.stringify(inputRecurrence) !== JSON.stringify(todo.recurrence);
+         || JSON.stringify(inputRecurrence) !== JSON.stringify(todo.recurrence)
+         || JSON.stringify(inputTags) !== JSON.stringify(todo.tags ?? []);
 
       if (changed) {
          updateTodo({
@@ -108,6 +112,7 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
             priority: inputPriority,
             subtasks,
             recurrence: inputRecurrence,
+            tags: inputTags,
          }).unwrap();
          logHistory('updated', inputTitle);
          showToast('Task updated');
@@ -135,7 +140,12 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
    const completedSubtasks = subtasks.filter(s => s.completed).length;
 
    return (
-      <li className={`${styles.todoItem} ${removing ? styles.removing : ''} ${isOverdue ? styles.overdue : ''}`}>
+      <li className={[
+         styles.todoItem,
+         removing    ? styles.removing      : '',
+         isOverdue   ? styles.overdue       : '',
+         checkBox && !isOverdue ? styles.completedCard : '',
+      ].join(' ')}>
          <div className={styles.priorityBar} style={{ background: priorityColor }} />
          <div className={styles.leftPart}>
             <span className={styles.todoIndex}>{index + 1}</span>
@@ -157,6 +167,16 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                         <span className={styles.recurrenceBadge}>
                            🔁 {getRecurrenceLabel(todo.recurrence)}
                         </span>
+                     )}
+                     {(todo.tags ?? []).length > 0 && (
+                        <div className={styles.tagsRow}>
+                           {todo.tags!.map(tag => (
+                              <span key={tag} className={styles.tagChip}
+                                 style={{ borderColor: getTagColor(tag), color: getTagColor(tag) }}>
+                                 {tag}
+                              </span>
+                           ))}
+                        </div>
                      )}
 
                      {/* Subtasks view */}
@@ -263,6 +283,10 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                            onChange={e => setInputDeadline(e.target.value)}
                            className={styles.editDeadlineInput}
                         />
+                     </div>
+                     <div className={styles.editDeadlineRow}>
+                        <label className={styles.editDeadlineLabel}>Tags</label>
+                        <TagPicker value={inputTags} onChange={setInputTags} />
                      </div>
                      <div className={styles.editDeadlineRow}>
                         <label className={styles.editDeadlineLabel}>Repeat</label>

@@ -5,22 +5,24 @@ import { loadFromLocalStorage } from '../../utils';
 import { useToast } from '../../context/ToastContext';
 import { Priority, Recurrence } from '../../redux/todosApi';
 import { RecurrencePicker } from '../RecurrencePicker';
+import { TagPicker } from '../TagPicker';
 
 const priorityOptions: { value: Priority; label: string; color: string }[] = [
-   { value: 'high', label: 'High', color: '#f07070' },
-   { value: 'medium', label: 'Medium', color: '#e0a060' },
-   { value: 'low', label: 'Low', color: '#4caf7d' },
+   { value: 'high',   label: '↑ High',   color: '#f07070' },
+   { value: 'medium', label: '→ Medium', color: '#e0a060' },
+   { value: 'low',    label: '↓ Low',    color: '#4caf7d' },
 ];
 
 export const AddTodoForm = () => {
-   const [title, setTitle] = useState('');
-   const [description, setDescription] = useState('');
-   const [deadline, setDeadline] = useState('');
-   const [priority, setPriority] = useState<Priority>('medium');
+   const [title,      setTitle]      = useState('');
+   const [description,setDescription]= useState('');
+   const [deadline,   setDeadline]   = useState('');
+   const [priority,   setPriority]   = useState<Priority>('medium');
    const [recurrence, setRecurrence] = useState<Recurrence | undefined>(undefined);
-   const [expanded, setExpanded] = useState(false);
+   const [tags,       setTags]       = useState<string[]>([]);
+   const [expanded,   setExpanded]   = useState(false);
 
-   const [addTodo] = useAddTodoMutation();
+   const [addTodo]    = useAddTodoMutation();
    const [addHistory] = useAddHistoryMutation();
    const { showToast } = useToast();
 
@@ -30,27 +32,31 @@ export const AddTodoForm = () => {
 
       addTodo({
          userId,
-         title: title.trim(),
-         completed: false,
+         title:       title.trim(),
+         completed:   false,
          description: description.trim(),
-         deadline: deadline || undefined,
+         deadline:    deadline || undefined,
          priority,
          recurrence,
+         tags,
+         order:       Date.now(),
+         createdAt:   new Date().toISOString(),
       }).unwrap();
 
       addHistory({
          userId,
-         action: 'added',
-         title: title.trim(),
+         action:    'added',
+         title:     title.trim(),
          timestamp: new Date().toISOString(),
       });
 
-      showToast('Task added');
+      showToast('Task added ✓');
       setTitle('');
       setDescription('');
       setDeadline('');
       setPriority('medium');
       setRecurrence(undefined);
+      setTags([]);
       setExpanded(false);
    };
 
@@ -60,11 +66,13 @@ export const AddTodoForm = () => {
 
    return (
       <div className={styles.wrapper}>
+
+         {/* ── Строка ввода ── */}
          <div className={styles.addTodoForm}>
             <input
                className={styles.inputAdd}
                value={title}
-               placeholder='TODO TITLE'
+               placeholder="What needs to be done?"
                type="text"
                onChange={e => setTitle(e.target.value)}
                onKeyDown={handleKeyDown}
@@ -79,8 +87,11 @@ export const AddTodoForm = () => {
             <button onClick={handleAdd} className={styles.btn}>Add</button>
          </div>
 
+         {/* ── Панель деталей ── */}
          {expanded && (
             <div className={styles.details}>
+
+               {/* Приоритет */}
                <div className={styles.priorityRow}>
                   {priorityOptions.map(opt => (
                      <button
@@ -89,23 +100,29 @@ export const AddTodoForm = () => {
                         className={styles.priorityBtn}
                         style={{
                            borderColor: priority === opt.value ? opt.color : '#2a2a2e',
-                           color: priority === opt.value ? opt.color : '#666',
-                           background: priority === opt.value ? `${opt.color}18` : 'transparent',
+                           color:       priority === opt.value ? opt.color : '#555',
+                           background:  priority === opt.value ? `${opt.color}18` : 'transparent',
                         }}
                      >
                         {opt.label}
                      </button>
                   ))}
                </div>
+
+               <div className={styles.divider} />
+
+               {/* Описание */}
                <textarea
                   className={styles.textarea}
                   value={description}
-                  placeholder='Description (optional)'
+                  placeholder="Description (optional)"
                   onChange={e => setDescription(e.target.value)}
-                  rows={3}
+                  rows={2}
                />
-               <div className={styles.deadlineRow}>
-                  <label className={styles.deadlineLabel}>Deadline</label>
+
+               {/* Дедлайн */}
+               <div className={styles.fieldRow}>
+                  <label className={styles.fieldLabel}>Deadline</label>
                   <input
                      className={styles.deadlineInput}
                      type="datetime-local"
@@ -113,10 +130,19 @@ export const AddTodoForm = () => {
                      onChange={e => setDeadline(e.target.value)}
                   />
                </div>
-               <div className={styles.deadlineRow}>
-                  <label className={styles.deadlineLabel}>Repeat</label>
+
+               {/* Теги */}
+               <div className={styles.fieldRow}>
+                  <label className={styles.fieldLabel}>Tags</label>
+                  <TagPicker value={tags} onChange={setTags} />
+               </div>
+
+               {/* Повтор */}
+               <div className={styles.fieldRow}>
+                  <label className={styles.fieldLabel}>Repeat</label>
                   <RecurrencePicker value={recurrence} onChange={setRecurrence} />
                </div>
+
             </div>
          )}
       </div>

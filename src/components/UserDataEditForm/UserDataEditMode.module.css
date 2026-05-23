@@ -1,44 +1,218 @@
-.editForm {
+.page {
    display: flex;
-   flex-direction: column;
-   gap: 10px;
-   max-width: 400px;
+   justify-content: flex-start;
 }
 
-.editForm input {
+/* ── Карточка ── */
+.card {
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   padding: 9px 12px;
-   color: #e0e0e0;
-   font-size: 14px;
+   border-radius: 10px;
+   padding: 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
    width: 100%;
-   transition: border-color 0.15s;
 }
 
-.editForm input:focus {
+/* ── Аватар ── */
+.avatarSection {
+   display: flex;
+   align-items: center;
+   gap: 14px;
+}
+
+.avatar {
+   width: 52px;
+   height: 52px;
+   border-radius: 50%;
+   background: #2a2a3e;
+   border: 0.5px solid #7c5cfc;
+   color: #9a8aff;
+   font-size: 16px;
+   font-weight: 600;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-shrink: 0;
+   transition: color 0.2s;
+   user-select: none;
+}
+
+.avatarHint {
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+}
+
+.avatarName {
+   font-size: 15px;
+   font-weight: 500;
+   color: #e0e0e0;
+}
+
+.avatarSub {
+   font-size: 12px;
+   color: #666;
+}
+
+/* ── Разделитель ── */
+.divider {
+   height: 0.5px;
+   background: #2a2a2e;
+   margin: 0 -24px;
+}
+
+/* ── Секции ── */
+.section {
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+}
+
+.sectionTitle {
+   font-size: 11px;
+   font-weight: 600;
+   color: #555;
+   text-transform: uppercase;
+   letter-spacing: 0.06em;
+}
+
+/* ── Поле ── */
+.field {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+}
+
+.label {
+   font-size: 12px;
+   color: #888;
+   font-weight: 500;
+}
+
+.inputRow {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.input {
+   flex: 1;
+   padding: 9px 12px;
+   background: #0e0e10;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   color: #e0e0e0;
+   font-size: 14px;
    outline: none;
+   transition: border-color 0.15s;
+   font-family: inherit;
+}
+
+.input:focus {
    border-color: #7c5cfc;
 }
 
-.editForm button {
-   background: #7c5cfc;
-   color: #fff;
-   border: none;
-   border-radius: 6px;
-   padding: 9px 16px;
-   font-size: 14px;
+.input::placeholder {
+   color: #3a3a3e;
+}
+
+.inputError {
+   border-color: #5a2a2a !important;
+   background: #1e1414;
+}
+
+.errorMsg {
+   font-size: 11px;
+   color: #f07070;
+   padding-left: 2px;
+}
+
+/* ── Кнопка показать/скрыть ── */
+.toggleBtn {
+   background: transparent;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 5px;
+   color: #666;
+   font-size: 11px;
+   padding: 6px 10px;
    cursor: pointer;
-   transition: background 0.15s;
-   align-self: flex-start;
+   white-space: nowrap;
+   transition: color 0.15s, border-color 0.15s;
+   flex-shrink: 0;
+}
+
+.toggleBtn:hover {
+   color: #e0e0e0;
+   border-color: #444;
+}
+
+/* ── Кнопки действий ── */
+.actions {
+   display: flex;
+   gap: 8px;
    margin-top: 4px;
 }
 
-.editForm button:hover {
+.cancelBtn {
+   flex: 1;
+   padding: 9px;
+   border-radius: 6px;
+   border: 0.5px solid #2a2a2e;
+   background: transparent;
+   color: #888;
+   font-size: 14px;
+   cursor: pointer;
+   transition: background 0.15s, color 0.15s;
+}
+
+.cancelBtn:hover {
+   background: #2a2a2e;
+   color: #e0e0e0;
+}
+
+.saveBtn {
+   flex: 2;
+   padding: 9px;
+   border-radius: 6px;
+   border: none;
+   background: #7c5cfc;
+   color: #fff;
+   font-size: 14px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: background 0.15s, opacity 0.15s;
+}
+
+.saveBtn:hover:not(:disabled) {
    background: #6a4ae0;
 }
 
-.loading {
-   opacity: 0.5;
-   pointer-events: none;
+.saveBtn:disabled {
+   opacity: 0.4;
+   cursor: default;
+}
+
+/* ── Скелетон загрузки ── */
+.skeletonAvatar {
+   width: 52px;
+   height: 52px;
+   border-radius: 50%;
+   background: linear-gradient(90deg, #2a2a2e 25%, #333338 50%, #2a2a2e 75%);
+   background-size: 200% 100%;
+   animation: shimmer 1.4s infinite;
+}
+
+.skeletonField {
+   height: 42px;
+   border-radius: 6px;
+   background: linear-gradient(90deg, #2a2a2e 25%, #333338 50%, #2a2a2e 75%);
+   background-size: 200% 100%;
+   animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+   0%   { background-position: 200% 0; }
+   100% { background-position: -200% 0; }
 }

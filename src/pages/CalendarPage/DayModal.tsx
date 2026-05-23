@@ -5,6 +5,7 @@ import { useDelTodoMutation, useUpdateTodoMutation, useAddTodoMutation, useAddHi
 import { useToast } from '../../context/ToastContext';
 import { loadFromLocalStorage, getRecurrenceLabel } from '../../utils';
 import { RecurrencePicker } from '../../components/RecurrencePicker';
+import { TagPicker, getTagColor } from '../../components/TagPicker';
 
 interface DayModalProps {
    date: Date;
@@ -40,6 +41,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
    const [newDeadline, setNewDeadline] = useState(toDatetimeLocal(date));
    const [newPriority, setNewPriority] = useState<Priority>('medium');
    const [newRecurrence, setNewRecurrence] = useState<Recurrence | undefined>(undefined);
+   const [newTags, setNewTags] = useState<string[]>([]);
 
    const [editingId, setEditingId] = useState<string | null>(null);
    const [editTitle, setEditTitle] = useState('');
@@ -47,6 +49,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
    const [editDeadline, setEditDeadline] = useState('');
    const [editPriority, setEditPriority] = useState<Priority>('medium');
    const [editRecurrence, setEditRecurrence] = useState<Recurrence | undefined>(undefined);
+   const [editTags, setEditTags] = useState<string[]>([]);
 
    const formatted = date.toLocaleDateString([], {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -74,6 +77,9 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
          priority: newPriority,
          subtasks: [],
          recurrence: newRecurrence,
+         tags: newTags,
+         order: Date.now(),
+         createdAt: new Date().toISOString(),
       }).unwrap();
       addHistory({ userId, action: 'added', title: newTitle.trim(), timestamp: new Date().toISOString() });
       showToast('Task added');
@@ -82,6 +88,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       setNewDeadline(toDatetimeLocal(date));
       setNewPriority('medium');
       setNewRecurrence(undefined);
+      setNewTags([]);
       setShowAdd(false);
    };
 
@@ -92,10 +99,11 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       setEditDeadline(todo.deadline ?? '');
       setEditPriority(todo.priority ?? 'medium');
       setEditRecurrence(todo.recurrence);
+      setEditTags(todo.tags ?? []);
    };
 
    const handleSave = (todo: Todo) => {
-      updateTodo({ ...todo, title: editTitle, description: editDesc, deadline: editDeadline || undefined, priority: editPriority, recurrence: editRecurrence }).unwrap();
+      updateTodo({ ...todo, title: editTitle, description: editDesc, deadline: editDeadline || undefined, priority: editPriority, recurrence: editRecurrence, tags: editTags }).unwrap();
       addHistory({ userId, action: 'updated', title: editTitle, timestamp: new Date().toISOString() });
       showToast('Task updated');
       setEditingId(null);
@@ -123,18 +131,34 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       saveSubtasks(todo, updated);
    };
 
+   const completedCount = todos.filter(t => t.completed).length;
+
    return (
       <div className={styles.overlay} onClick={onClose}>
          <div className={styles.modal} onClick={e => e.stopPropagation()}>
 
+            {/* ── Заголовок ── */}
             <div className={styles.modalHeader}>
-               <h3 className={styles.modalTitle}>{formatted}</h3>
+               <div>
+                  <h3 className={styles.modalTitle}>{formatted}</h3>
+                  {todos.length > 0 && (
+                     <p className={styles.modalSubtitle}>
+                        {completedCount} of {todos.length} completed
+                     </p>
+                  )}
+               </div>
                <button className={styles.closeBtn} onClick={onClose}>✕</button>
             </div>
 
+            {/* ── Скролл-область ── */}
+            <div className={styles.body}>
+
             <ul className={styles.list}>
                {todos.length === 0 && !showAdd && (
-                  <p className={styles.empty}>No tasks this day</p>
+                  <div className={styles.empty}>
+                     <span className={styles.emptyIcon}>○</span>
+                     No tasks this day
+                  </div>
                )}
                {todos.map(todo => (
                   <li
@@ -165,6 +189,10 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                               <input type="datetime-local" className={styles.editDeadlineInput} value={editDeadline} onChange={e => setEditDeadline(e.target.value)} />
                            </div>
                            <div className={styles.editDeadlineRow}>
+                              <label className={styles.editLabel}>Tags</label>
+                              <TagPicker value={editTags} onChange={setEditTags} />
+                           </div>
+                           <div className={styles.editDeadlineRow}>
                               <label className={styles.editLabel}>Repeat</label>
                               <RecurrencePicker value={editRecurrence} onChange={setEditRecurrence} />
                            </div>
@@ -189,6 +217,16 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                                     <span className={styles.recurrenceBadge}>
                                        🔁 {getRecurrenceLabel(todo.recurrence)}
                                     </span>
+                                 )}
+                                 {(todo.tags ?? []).length > 0 && (
+                                    <div className={styles.tagsRow}>
+                                       {todo.tags!.map(tag => (
+                                          <span key={tag} className={styles.tagChip}
+                                             style={{ borderColor: getTagColor(tag), color: getTagColor(tag) }}>
+                                             {tag}
+                                          </span>
+                                       ))}
+                                    </div>
                                  )}
 
                                  {/* Subtasks */}
@@ -256,6 +294,10 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                      <input type="datetime-local" className={styles.editDeadlineInput} value={newDeadline} onChange={e => setNewDeadline(e.target.value)} />
                   </div>
                   <div className={styles.editDeadlineRow}>
+                     <label className={styles.editLabel}>Tags</label>
+                     <TagPicker value={newTags} onChange={setNewTags} />
+                  </div>
+                  <div className={styles.editDeadlineRow}>
                      <label className={styles.editLabel}>Repeat</label>
                      <RecurrencePicker value={newRecurrence} onChange={setNewRecurrence} />
                   </div>
@@ -266,8 +308,12 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                </div>
             )}
 
+            </div>{/* /body */}
+
             {!showAdd && (
-               <button className={styles.addBtn} onClick={() => setShowAdd(true)}>+ Add task</button>
+               <div className={styles.footer}>
+                  <button className={styles.addBtn} onClick={() => setShowAdd(true)}>+ Add task</button>
+               </div>
             )}
          </div>
       </div>

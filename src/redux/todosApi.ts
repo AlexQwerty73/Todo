@@ -31,6 +31,9 @@ export interface Todo {
    priority?: Priority;
    subtasks?: Subtask[];
    recurrence?: Recurrence;
+   tags?: string[];
+   order?: number;
+   createdAt?: string;
 }
 
 export interface AddTodoBody {
@@ -42,6 +45,9 @@ export interface AddTodoBody {
    priority?: Priority;
    subtasks?: Subtask[];
    recurrence?: Recurrence;
+   tags?: string[];
+   order?: number;
+   createdAt?: string;
 }
 
 export const todosApi = createApi({
@@ -64,7 +70,7 @@ export const todosApi = createApi({
 
       getTodosByUserId: build.query<Todo[], string>({
          query: (userId) => `todos?userId=${userId}`,
-         providesTags: (result, error, userId) =>
+         providesTags: (result, _error, userId) =>
             result
                ? [
                   ...result.map(({ id }) => ({ type: 'Todos' as const, id })),

@@ -7,3 +7,4 @@ export * from './AddTodoForm';
 export * from './UserData';
 export * from './UserDataEditForm';
 export * from './RecurrencePicker';
+export * from './TagPicker';

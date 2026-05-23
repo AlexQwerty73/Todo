@@ -35,7 +35,15 @@ export const historyApi = createApi({
          invalidatesTags: [{ type: 'History', id: 'LIST' }],
       }),
 
+      deleteHistory: build.mutation<void, string>({
+         query: (id) => ({
+            url: `history/${id}`,
+            method: 'DELETE',
+         }),
+         invalidatesTags: [{ type: 'History', id: 'LIST' }],
+      }),
+
    }),
 });
 
-export const { useGetHistoryQuery, useAddHistoryMutation } = historyApi;
+export const { useGetHistoryQuery, useAddHistoryMutation, useDeleteHistoryMutation } = historyApi;

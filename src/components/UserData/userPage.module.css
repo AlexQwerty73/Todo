@@ -1,148 +1,254 @@
+/* ── Страница — двухколоночная сетка ── */
 .page {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  /* max-width: 800px; */
+   display: grid;
+   grid-template-columns: 1fr 340px;
+   grid-template-rows: auto;
+   gap: 12px;
+   align-items: start;
 }
 
-.userData {
-   background: #1a1a1e;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 10px;
-   padding: 20px 24px;
+/* Левая колонка: профиль + активность */
+.colLeft {
    display: flex;
    flex-direction: column;
    gap: 12px;
 }
 
+/* Правая колонка: статистика + экспорт + удаление */
+.colRight {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+}
+
+/* ══════════════════════════════════════
+   ПРОФИЛЬ
+══════════════════════════════════════ */
+.profileCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 12px;
+   padding: 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+/* ── Шапка профиля ── */
 .profileTop {
    display: flex;
    align-items: center;
-   gap: 14px;
+   justify-content: space-between;
+   gap: 16px;
 }
 
+.profileLeft {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+   flex: 1;
+   min-width: 0;
+}
+
+/* ── Аватар ── */
 .avatar {
-   width: 44px;
-   height: 44px;
+   width: 60px;
+   height: 60px;
    border-radius: 50%;
-   background: #2a2a3e;
-   border: 0.5px solid #7c5cfc;
+   background: linear-gradient(135deg, #2a2a3e, #1e1e30);
+   border: 1.5px solid #7c5cfc;
+   box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.1), 0 4px 16px rgba(0, 0, 0, 0.4);
    color: #9a8aff;
-   font-size: 14px;
-   font-weight: 500;
+   font-size: 18px;
+   font-weight: 600;
    display: flex;
    align-items: center;
    justify-content: center;
    flex-shrink: 0;
+   user-select: none;
+   letter-spacing: 0.02em;
 }
 
 .profileInfo {
    display: flex;
    flex-direction: column;
    gap: 2px;
+   min-width: 0;
 }
 
 .profileName {
-   font-size: 15px;
-   font-weight: 500;
-   color: #e0e0e0;
+   font-size: 18px;
+   font-weight: 600;
+   color: #e8e8e8;
+   letter-spacing: -0.01em;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 .profileEmail {
    font-size: 13px;
-   color: #888;
+   color: #666;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 .memberSince {
    font-size: 11px;
-   color: #555;
+   color: #444;
+   margin-top: 2px;
 }
 
+/* ── Кнопка Edit ── */
+.editBtn {
+   background: #7c5cfc;
+   color: #fff;
+   border: none;
+   border-radius: 8px;
+   padding: 8px 16px;
+   font-size: 13px;
+   font-weight: 500;
+   cursor: pointer;
+   transition: background 0.15s, box-shadow 0.15s;
+   flex-shrink: 0;
+   white-space: nowrap;
+}
+
+.editBtn:hover {
+   background: #6a4ae0;
+   box-shadow: 0 2px 12px rgba(124, 92, 252, 0.35);
+}
+
+/* ── Разделитель ── */
 .divider {
    height: 0.5px;
-   background: #2a2a2e;
+   background: #222226;
+   margin: 0 -24px;
 }
 
+/* ── Поля ── */
 .fields {
    display: flex;
    flex-direction: column;
-   gap: 8px;
+   gap: 0;
 }
 
 .field {
    display: flex;
-   justify-content: space-between;
    align-items: center;
+   justify-content: space-between;
+   padding: 10px 0;
+   border-bottom: 0.5px solid #1e1e22;
+}
+
+.field:last-child {
+   border-bottom: none;
 }
 
 .fieldLabel {
-   font-size: 13px;
-   color: #888;
+   font-size: 12px;
+   color: #555;
+   text-transform: uppercase;
+   letter-spacing: 0.06em;
+   font-weight: 500;
 }
 
 .fieldValue {
    font-size: 13px;
-   color: #e0e0e0;
+   color: #aaa;
+   font-variant-numeric: tabular-nums;
 }
 
-.lastActivity {
-   font-size: 12px;
-   color: #555;
+.fieldEmpty {
+   font-size: 13px;
+   color: #333;
+   font-style: italic;
 }
 
-.lastActivity span {
-   color: #888;
-}
-
-.btns {
+/* ── Строка пароль ── */
+.passwordRow {
    display: flex;
+   align-items: center;
    gap: 8px;
 }
 
-.primary {
-   background: #1e1e22;
-   color: #888;
+.showPassBtn {
+   background: transparent;
    border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   padding: 7px 14px;
-   font-size: 13px;
+   border-radius: 4px;
+   color: #555;
+   font-size: 11px;
+   padding: 3px 8px;
    cursor: pointer;
-   transition: background 0.15s, color 0.15s;
+   transition: color 0.15s, border-color 0.15s;
+   white-space: nowrap;
 }
 
-.primary:hover {
-   background: #2a2a2e;
-   color: #e0e0e0;
+.showPassBtn:hover {
+   color: #aaa;
+   border-color: #3a3a3e;
 }
 
-.secondary {
+/* ── Последняя активность ── */
+.lastActivity {
+   display: flex;
+   align-items: flex-start;
+   gap: 8px;
+   padding: 10px 14px;
+   background: #0e0e10;
+   border-radius: 8px;
+   border: 0.5px solid #1e1e22;
+}
+
+.lastActivityDot {
+   width: 6px;
+   height: 6px;
+   border-radius: 50%;
    background: #7c5cfc;
-   color: #fff;
-   border: none;
-   border-radius: 6px;
-   padding: 7px 14px;
-   font-size: 13px;
-   cursor: pointer;
-   transition: background 0.15s;
+   flex-shrink: 0;
+   margin-top: 5px;
 }
 
-.secondary:hover { background: #6a4ae0; }
+.lastActivityText {
+   font-size: 12px;
+   color: #555;
+   line-height: 1.5;
+}
 
-/* Stats */
+.lastActivityText strong {
+   color: #888;
+   font-weight: 500;
+}
+
+.lastActivityTime {
+   margin-left: auto;
+   font-size: 11px;
+   color: #3a3a3e;
+   white-space: nowrap;
+   flex-shrink: 0;
+   padding-top: 2px;
+}
+
+/* ══════════════════════════════════════
+   СТАТИСТИКА
+══════════════════════════════════════ */
 .statsCard {
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
-   border-radius: 10px;
-   padding: 16px 24px;
+   border-radius: 12px;
+   padding: 20px 24px;
    display: flex;
    flex-direction: column;
-   gap: 12px;
+   gap: 14px;
 }
 
-.statsTitle {
-   font-size: 13px;
-   font-weight: 500;
-   color: #888;
+.cardTitle {
+   font-size: 11px;
+   font-weight: 600;
+   color: #444;
+   text-transform: uppercase;
+   letter-spacing: 0.08em;
 }
 
 .statsGrid {
@@ -155,55 +261,148 @@
    display: flex;
    flex-direction: column;
    align-items: center;
-   gap: 2px;
+   gap: 4px;
    background: #0e0e10;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   padding: 8px 4px;
+   border: 0.5px solid #1e1e22;
+   border-radius: 8px;
+   padding: 12px 4px;
+   transition: border-color 0.15s;
 }
 
-.statOverdue .statNum { color: #f07070; }
+.statItem:hover { border-color: #2a2a2e; }
+
+.statOverdue .statNum { color: #f07070 !important; }
+.statOverdue { border-color: #2d1a1a; }
 
 .statNum {
-   font-size: 18px;
-   font-weight: 500;
+   font-size: 22px;
+   font-weight: 700;
    color: #e0e0e0;
+   line-height: 1;
+   font-variant-numeric: tabular-nums;
 }
+
+.statDone .statNum    { color: #4caf7d; }
+.statActive .statNum  { color: #e0a060; }
 
 .statLabel {
-   font-size: 11px;
-   color: #555;
+   font-size: 10px;
+   color: #444;
+   text-transform: uppercase;
+   letter-spacing: 0.06em;
 }
 
-.progressBar {
-   height: 3px;
-   background: #2a2a2e;
-   border-radius: 2px;
+/* Прогресс */
+.progressRow {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.progressTrack {
+   flex: 1;
+   height: 4px;
+   background: #1e1e22;
+   border-radius: 4px;
    overflow: hidden;
 }
 
 .progressFill {
    height: 100%;
-   background: #7c5cfc;
-   border-radius: 2px;
-   transition: width 0.4s ease;
+   background: linear-gradient(90deg, #7c5cfc, #5ca8fc);
+   border-radius: 4px;
+   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+   min-width: 6px;
 }
 
 .progressLabel {
-   font-size: 11px;
+   font-size: 12px;
    color: #555;
+   white-space: nowrap;
+   min-width: 80px;
    text-align: right;
+   font-variant-numeric: tabular-nums;
 }
 
-/* Export */
+/* ══════════════════════════════════════
+   НЕДАВНЯЯ АКТИВНОСТЬ
+══════════════════════════════════════ */
+.activityCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 12px;
+   padding: 20px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+}
+
+.activityList {
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+}
+
+.activityItem {
+   display: flex;
+   align-items: baseline;
+   gap: 10px;
+   padding: 7px 0;
+   border-bottom: 0.5px solid #1a1a1e;
+}
+
+.activityItem:last-child { border-bottom: none; }
+
+.activityIcon {
+   font-size: 12px;
+   width: 20px;
+   height: 20px;
+   border-radius: 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-shrink: 0;
+   font-style: normal;
+}
+
+.activityText {
+   flex: 1;
+   font-size: 12px;
+   color: #666;
+   line-height: 1.4;
+   min-width: 0;
+}
+
+.activityTitle {
+   color: #999;
+   font-weight: 500;
+}
+
+.activityAgo {
+   font-size: 11px;
+   color: #333;
+   white-space: nowrap;
+   flex-shrink: 0;
+}
+
+.activityEmpty {
+   font-size: 13px;
+   color: #333;
+   text-align: center;
+   padding: 8px 0;
+}
+
+/* ══════════════════════════════════════
+   ЭКСПОРТ
+══════════════════════════════════════ */
 .exportCard {
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
-   border-radius: 10px;
-   padding: 16px 24px;
+   border-radius: 12px;
+   padding: 20px 24px;
    display: flex;
    flex-direction: column;
-   gap: 10px;
+   gap: 12px;
 }
 
 .exportBtns {
@@ -213,46 +412,91 @@
 
 .exportBtn {
    flex: 1;
-   background: #1e1e22;
-   color: #888;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   padding: 8px;
-   font-size: 13px;
+   background: #0e0e10;
+   color: #777;
+   border: 0.5px solid #1e1e22;
+   border-radius: 8px;
+   padding: 10px 8px;
+   font-size: 12px;
    cursor: pointer;
-   transition: background 0.15s, color 0.15s;
+   transition: background 0.15s, color 0.15s, border-color 0.15s;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 4px;
 }
 
-.exportBtn:hover {
-   background: #2a2a2e;
-   color: #e0e0e0;
+.exportBtn:hover:not(:disabled) {
+   background: #1e1e22;
+   color: #ccc;
+   border-color: #2a2a2e;
 }
 
-/* Danger */
+.exportBtn:disabled {
+   opacity: 0.5;
+   cursor: default;
+}
+
+.exportBtnIcon {
+   font-size: 16px;
+   line-height: 1;
+}
+
+.exportBtnLabel {
+   font-size: 11px;
+   font-weight: 500;
+   letter-spacing: 0.02em;
+}
+
+/* ══════════════════════════════════════
+   ЗОНА ОПАСНОСТИ
+══════════════════════════════════════ */
 .dangerCard {
    background: #1a1a1e;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 10px;
-   padding: 16px 24px;
+   border: 0.5px solid #2d1a1a;
+   border-radius: 12px;
+   padding: 20px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+}
+
+.dangerTitle {
+   font-size: 11px;
+   font-weight: 600;
+   color: #6a3a3a;
+   text-transform: uppercase;
+   letter-spacing: 0.08em;
+}
+
+.dangerDesc {
+   font-size: 12px;
+   color: #555;
+   line-height: 1.5;
 }
 
 .deleteBtn {
+   align-self: flex-start;
    background: transparent;
-   color: #f07070;
+   color: #c06060;
    border: 0.5px solid #5a2a2a;
    border-radius: 6px;
-   padding: 7px 14px;
+   padding: 8px 16px;
    font-size: 13px;
    cursor: pointer;
-   transition: background 0.15s;
+   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
-.deleteBtn:hover { background: #2d1a1a; }
+.deleteBtn:hover {
+   background: #2d1a1a;
+   color: #f07070;
+   border-color: #7a3a3a;
+}
 
 .confirmBlock {
    display: flex;
    flex-direction: column;
-   gap: 10px;
+   gap: 12px;
 }
 
 .confirmText {
@@ -270,25 +514,302 @@
    color: #f07070;
    border: none;
    border-radius: 6px;
-   padding: 7px 14px;
+   padding: 8px 16px;
    font-size: 13px;
+   font-weight: 500;
    cursor: pointer;
    transition: background 0.15s;
 }
 
-.confirmDelete:hover { background: #7a3a3a; }
+.confirmDelete:hover:not(:disabled) { background: #7a3a3a; }
+.confirmDelete:disabled { opacity: 0.5; cursor: default; }
 
 .cancelBtn {
    background: transparent;
-   color: #666;
+   color: #555;
    border: 0.5px solid #2a2a2e;
    border-radius: 6px;
-   padding: 7px 14px;
+   padding: 8px 16px;
    font-size: 13px;
    cursor: pointer;
    transition: background 0.15s, color 0.15s;
 }
 
-.cancelBtn:hover { background: #2a2a2e; color: #e0e0e0; }
+.cancelBtn:hover { background: #1e1e22; color: #aaa; }
 
-.loading { font-size: 13px; color: #555; }
+/* ══════════════════════════════════════
+   СКЕЛЕТОН
+══════════════════════════════════════ */
+.skeleton {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+}
+
+.skeletonCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 12px;
+   padding: 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+}
+
+.skeletonTop {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+}
+
+.skeletonAvatar {
+   width: 60px;
+   height: 60px;
+   border-radius: 50%;
+   flex-shrink: 0;
+}
+
+.skeletonLines {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.skeletonLine {
+   height: 10px;
+   border-radius: 5px;
+}
+
+.shimmer {
+   background: linear-gradient(90deg, #1e1e22 25%, #252528 50%, #1e1e22 75%);
+   background-size: 200% 100%;
+   animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+   0%   { background-position: 200% 0; }
+   100% { background-position: -200% 0; }
+}
+
+/* ══════════════════════════════════════
+   PRIORITY BREAKDOWN
+══════════════════════════════════════ */
+.priorityCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 12px;
+   padding: 20px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+}
+
+.priorityList {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.priorityRow {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.priorityDot {
+   width: 8px;
+   height: 8px;
+   border-radius: 50%;
+   flex-shrink: 0;
+}
+
+.priorityRowLabel {
+   font-size: 12px;
+   color: #777;
+   min-width: 52px;
+   flex-shrink: 0;
+}
+
+.priorityTrack {
+   flex: 1;
+   height: 6px;
+   background: #0e0e10;
+   border-radius: 4px;
+   overflow: hidden;
+}
+
+.priorityFill {
+   height: 100%;
+   border-radius: 4px;
+   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+   min-width: 3px;
+   opacity: 0.85;
+}
+
+.priorityCount {
+   font-size: 12px;
+   color: #555;
+   min-width: 28px;
+   text-align: right;
+   font-variant-numeric: tabular-nums;
+}
+
+.priorityPct {
+   font-size: 11px;
+   color: #333;
+   min-width: 32px;
+   text-align: right;
+   font-variant-numeric: tabular-nums;
+}
+
+/* ══════════════════════════════════════
+   TAGS OVERVIEW
+══════════════════════════════════════ */
+.tagsCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 12px;
+   padding: 20px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+}
+
+.tagsList {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.tagRow {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.tagDot {
+   width: 8px;
+   height: 8px;
+   border-radius: 3px;
+   flex-shrink: 0;
+}
+
+.tagName {
+   font-size: 12px;
+   font-weight: 500;
+   min-width: 64px;
+   max-width: 100px;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   flex-shrink: 0;
+}
+
+.tagTrack {
+   flex: 1;
+   height: 5px;
+   background: #0e0e10;
+   border-radius: 4px;
+   overflow: hidden;
+}
+
+.tagFill {
+   height: 100%;
+   border-radius: 4px;
+   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+   min-width: 3px;
+}
+
+.tagCount {
+   font-size: 11px;
+   color: #444;
+   min-width: 24px;
+   text-align: right;
+   font-variant-numeric: tabular-nums;
+}
+
+.tagsEmpty {
+   font-size: 12px;
+   color: #333;
+   text-align: center;
+   padding: 6px 0;
+}
+
+/* ══════════════════════════════════════
+   UPCOMING DEADLINES
+══════════════════════════════════════ */
+.deadlinesCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 12px;
+   padding: 20px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+}
+
+.deadlinesList {
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+}
+
+.deadlineItem {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   padding: 8px 0;
+   border-bottom: 0.5px solid #1a1a1e;
+}
+
+.deadlineItem:last-child { border-bottom: none; }
+
+.deadlinePriorityBar {
+   width: 3px;
+   height: 28px;
+   border-radius: 2px;
+   flex-shrink: 0;
+}
+
+.deadlineTitle {
+   flex: 1;
+   font-size: 13px;
+   color: #aaa;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   min-width: 0;
+}
+
+.deadlineBadge {
+   font-size: 11px;
+   padding: 3px 8px;
+   border-radius: 5px;
+   background: #0e0e10;
+   border: 0.5px solid #2a2a2e;
+   color: #666;
+   white-space: nowrap;
+   flex-shrink: 0;
+   font-variant-numeric: tabular-nums;
+}
+
+.deadlineBadgeSoon {
+   border-color: #5a2a2a;
+   color: #f07070;
+   background: #1e1414;
+}
+
+.deadlineDate {
+   font-size: 11px;
+   color: #333;
+   white-space: nowrap;
+   flex-shrink: 0;
+}
+
+.deadlinesEmpty {
+   font-size: 12px;
+   color: #333;
+   text-align: center;
+   padding: 6px 0;
+}

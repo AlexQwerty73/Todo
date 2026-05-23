@@ -6,3 +6,4 @@ export * from './UserPage';
 export * from './UserEditPage';
 export * from './HistoryPage';
 export * from './CalendarPage';
+export * from './SettingsPage';

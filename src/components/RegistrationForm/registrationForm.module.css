@@ -1,54 +1,230 @@
-/* registrationForm.module.css */
-.formContainer {
+/* ── Glow (унаследован из authOutlet) ── */
+.glow {
    position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-   width: 360px;
-   background: #1a1a1e;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 10px;
-   padding: 28px 32px;
+   inset: 0;
+   background: radial-gradient(ellipse 900px 600px at 50% 50%, rgba(124,92,252,0.07) 0%, transparent 100%);
+   pointer-events: none;
 }
 
-.formLabel {
-   display: block;
-   font-size: 13px;
-   color: #888;
+/* ── Карточка ── */
+.card {
+   width: 400px;
+   background: #1a1a1e;
+   border: 0.5px solid #252528;
+   border-radius: 16px;
+   padding: 40px;
+   display: flex;
+   flex-direction: column;
+   position: relative;
+   z-index: 1;
+   box-shadow: 0 8px 48px rgba(0,0,0,0.5);
+   animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+   from { opacity: 0; transform: translateY(12px); }
+   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Бренд ── */
+.brand {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   margin-bottom: 32px;
+}
+
+.brandIcon {
+   width: 36px;
+   height: 36px;
+   background: linear-gradient(135deg, #7c5cfc, #5ca8fc);
+   border-radius: 9px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 17px;
+   color: #fff;
+   flex-shrink: 0;
+   box-shadow: 0 2px 12px rgba(124,92,252,0.4);
+}
+
+.brandName {
+   font-size: 15px;
+   font-weight: 700;
+   color: #d0d0d0;
+   letter-spacing: -0.01em;
+}
+
+/* ── Заголовок ── */
+.heading {
+   font-size: 24px;
+   font-weight: 700;
+   color: #ebebeb;
+   letter-spacing: -0.03em;
    margin-bottom: 6px;
 }
 
-.formInput {
+.subtext {
+   font-size: 14px;
+   color: #4a4a4e;
+   margin-bottom: 28px;
+   line-height: 1.4;
+}
+
+/* ── Поля ── */
+.fields {
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+   margin-bottom: 20px;
+}
+
+.field {
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+.label {
+   font-size: 11px;
+   font-weight: 600;
+   color: #4a4a4e;
+   text-transform: uppercase;
+   letter-spacing: 0.08em;
+   display: flex;
+   align-items: center;
+   gap: 6px;
+}
+
+.optional {
+   font-size: 10px;
+   font-weight: 400;
+   color: #2e2e34;
+   text-transform: none;
+   letter-spacing: 0;
+}
+
+.inputWrap {
+   position: relative;
+   display: flex;
+   align-items: center;
+}
+
+.input {
    width: 100%;
-   padding: 9px 12px;
-   margin-bottom: 14px;
-   border: 0.5px solid #2a2a2e;
-   border-radius: 6px;
-   background: #0e0e10;
+   padding: 10px 14px;
+   background: #111114;
+   border: 0.5px solid #252528;
+   border-radius: 8px;
    color: #e0e0e0;
    font-size: 14px;
-   transition: border-color 0.15s;
-}
-
-.formInput:focus {
    outline: none;
-   border-color: #7c5cfc;
+   transition: border-color 0.15s, box-shadow 0.15s;
+   font-family: inherit;
+   box-sizing: border-box;
 }
 
-.formButton {
+.input:focus {
+   border-color: #7c5cfc;
+   box-shadow: 0 0 0 3px rgba(124,92,252,0.1);
+}
+
+.input::placeholder { color: #2a2a2e; }
+
+.inputError { border-color: #5a2a2a !important; }
+
+.inputWithBtn { padding-right: 62px; }
+
+.showPassBtn {
+   position: absolute;
+   right: 10px;
+   background: transparent;
+   border: none;
+   color: #3a3a3e;
+   font-size: 11px;
+   font-weight: 600;
+   cursor: pointer;
+   padding: 4px 6px;
+   transition: color 0.15s;
+   letter-spacing: 0.04em;
+   text-transform: uppercase;
+}
+
+.showPassBtn:hover { color: #888; }
+
+/* ── Ошибка ── */
+.errorMsg {
+   font-size: 12px;
+   color: #f07070;
+   background: #1e1414;
+   border: 0.5px solid #5a2a2a;
+   border-radius: 8px;
+   padding: 10px 12px;
+   margin-bottom: 16px;
+   line-height: 1.4;
+}
+
+/* ── Кнопка ── */
+.submitBtn {
    width: 100%;
-   padding: 10px;
+   padding: 13px;
    background: #7c5cfc;
    color: #fff;
    border: none;
-   border-radius: 6px;
-   font-size: 14px;
-   font-weight: 500;
+   border-radius: 8px;
+   font-size: 15px;
+   font-weight: 600;
    cursor: pointer;
-   margin-top: 4px;
-   transition: background 0.15s;
+   transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+   letter-spacing: -0.01em;
+   font-family: inherit;
 }
 
-.formButton:hover {
+.submitBtn:hover {
    background: #6a4ae0;
+   box-shadow: 0 4px 20px rgba(124,92,252,0.4);
 }
+
+.submitBtn:active { transform: scale(0.99); }
+
+/* ── Разделитель ── */
+.divider {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   margin: 24px 0 20px;
+}
+
+.dividerLine {
+   flex: 1;
+   height: 0.5px;
+   background: #1e1e22;
+}
+
+.dividerText {
+   font-size: 11px;
+   color: #2e2e34;
+   text-transform: uppercase;
+   letter-spacing: 0.06em;
+}
+
+/* ── Ссылка внизу ── */
+.footer {
+   text-align: center;
+   font-size: 13px;
+   color: #3a3a3e;
+}
+
+.footerLink {
+   color: #7c5cfc;
+   background: transparent;
+   border: none;
+   cursor: pointer;
+   font-size: 13px;
+   font-weight: 500;
+   padding: 0;
+   transition: color 0.15s;
+   font-family: inherit;
+}
+
+.footerLink:hover { color: #9a7cff; text-decoration: underline; }
