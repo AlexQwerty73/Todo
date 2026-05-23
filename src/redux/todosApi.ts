@@ -4,16 +4,20 @@ const baseUrl = 'http://localhost:3001/';
 
 // Types for the data we work with
 export interface Todo {
-   id: number;
+   id: string;
    userId: string;
    title: string;
    completed: boolean;
+   description?: string;
+   deadline?: string;
 }
 
 export interface AddTodoBody {
    userId: string;
    title: string;
    completed: boolean;
+   description?: string;
+   deadline?: string;
 }
 
 // Creating API for working with todos
@@ -59,7 +63,7 @@ export const todosApi = createApi({
       }),
 
       // Delete a todo
-      delTodo: build.mutation<void, number>({
+      delTodo: build.mutation<void, string>({
          query: (id) => ({
             url: `todos/${id}`,
             method: 'DELETE',

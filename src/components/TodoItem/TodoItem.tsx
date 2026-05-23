@@ -23,13 +23,22 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
 
    const userId = loadFromLocalStorage<string>('user') ?? '';
 
-   const logHistory = (action: 'added' | 'deleted' | 'completed' | 'reopened' | 'updated', title: string) => {
-      addHistory({
-         userId,
-         action,
-         title,
-         timestamp: new Date().toISOString(),
+   const isOverdue = todo.deadline && !todo.completed
+      && new Date(todo.deadline) < new Date();
+
+   const formatDeadline = (deadline: string) => {
+      const date = new Date(deadline);
+      return date.toLocaleString([], {
+         day: '2-digit',
+         month: '2-digit',
+         year: 'numeric',
+         hour: '2-digit',
+         minute: '2-digit',
       });
+   };
+
+   const logHistory = (action: 'added' | 'deleted' | 'completed' | 'reopened' | 'updated', title: string) => {
+      addHistory({ userId, action, title, timestamp: new Date().toISOString() });
    };
 
    const onChangeHandler = () => {
@@ -59,21 +68,31 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
    };
 
    return (
-      <li className={`${styles.todoItem} ${removing ? styles.removing : ''}`}>
+      <li className={`${styles.todoItem} ${removing ? styles.removing : ''} ${isOverdue ? styles.overdue : ''}`}>
          <div className={styles.leftPart}>
             <span className={styles.todoIndex}>{index + 1}</span>
-            {!isEdit
-               ? <p className={`${styles.todoTitle} ${checkBox ? styles.completed : ''}`}>
-                  {todo.title}
-               </p>
-               : <input
-                  type="text"
-                  value={inputTitle}
-                  onChange={(e) => setInputTitle(e.target.value)}
-                  className={styles.todoInput}
-                  autoFocus
-               />
-            }
+            <div className={styles.titleBlock}>
+               {!isEdit
+                  ? <p className={`${styles.todoTitle} ${checkBox ? styles.completed : ''}`}>
+                     {todo.title}
+                  </p>
+                  : <input
+                     type="text"
+                     value={inputTitle}
+                     onChange={(e) => setInputTitle(e.target.value)}
+                     className={styles.todoInput}
+                     autoFocus
+                  />
+               }
+               {todo.deadline && (
+                  <span className={`${styles.deadline} ${isOverdue ? styles.deadlineOverdue : ''}`}>
+                     ⏱ {formatDeadline(todo.deadline)}
+                  </span>
+               )}
+               {todo.description && (
+                  <span className={styles.description}>{todo.description}</span>
+               )}
+            </div>
          </div>
          <div className={styles.todoButtons}>
             <input

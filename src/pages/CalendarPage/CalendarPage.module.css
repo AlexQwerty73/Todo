@@ -1,0 +1,110 @@
+.page { max-width: 700px; }
+
+.header {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+   margin-bottom: 16px;
+}
+
+.title {
+   font-size: 16px;
+   font-weight: 500;
+   color: #e0e0e0;
+   min-width: 180px;
+   text-align: center;
+}
+
+.navBtn {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   color: #888;
+   font-size: 18px;
+   width: 32px;
+   height: 32px;
+   cursor: pointer;
+   transition: color 0.15s, background 0.15s;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.navBtn:hover { background: #2a2a2e; color: #e0e0e0; }
+
+.grid {
+   display: grid;
+   grid-template-columns: repeat(7, 1fr);
+   gap: 4px;
+}
+
+.weekday {
+   font-size: 11px;
+   color: #555;
+   text-align: center;
+   padding: 6px 0;
+   text-transform: uppercase;
+   letter-spacing: 0.05em;
+}
+
+.cell {
+   min-height: 80px;
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   padding: 6px;
+   cursor: pointer;
+   transition: border-color 0.15s;
+   display: flex;
+   flex-direction: column;
+   gap: 3px;
+}
+
+.cell:hover { border-color: #3a3a3e; }
+
+.outside {
+   background: #111113;
+   cursor: default;
+   opacity: 0.4;
+}
+
+.outside:hover { border-color: #2a2a2e; }
+
+.today { border-color: #7c5cfc; }
+.today:hover { border-color: #9a7aff; }
+
+.dayNum {
+   font-size: 12px;
+   color: #888;
+   font-weight: 500;
+}
+
+.today .dayNum { color: #7c5cfc; }
+
+.todoChips {
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+}
+
+.chip {
+   font-size: 10px;
+   background: #2a2a3e;
+   color: #9a8aff;
+   border-radius: 3px;
+   padding: 1px 5px;
+   white-space: nowrap;
+   overflow: hidden;
+}
+
+.chipDone {
+   background: #1e2a1e;
+   color: #4a7a4a;
+   text-decoration: line-through;
+}
+
+.more {
+   font-size: 10px;
+   color: #555;
+   padding-left: 5px;
+}
