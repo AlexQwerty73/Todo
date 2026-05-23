@@ -1,24 +1,25 @@
 import { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetUsersQuery, useGetTodosByUserIdQuery, useGetHistoryQuery } from '../../redux';
+import { useGetUsersQuery, useGetTodosByUserIdQuery, useGetHistoryQuery, useDeleteUserMutation, useDelTodoMutation } from '../../redux';
 import { User } from '../../redux/usersApi';
 import styles from './userPage.module.css';
 import html2canvas from 'html2canvas';
+import { removeKeyFromLocalStorage } from '../../utils';
 
-interface UserDataProps {
-   editMode?: boolean;
-}
-
-export const UserData = ({ editMode }: UserDataProps) => {
+export const UserData = () => {
    const navigate = useNavigate();
    const { id } = useParams<{ id: string }>();
    const { data, isLoading } = useGetUsersQuery(id);
    const { data: todos = [] } = useGetTodosByUserIdQuery(id ?? '');
    const { data: history = [] } = useGetHistoryQuery(id ?? '');
 
+   const [deleteUser] = useDeleteUserMutation();
+   const [delTodo] = useDelTodoMutation();
+
    const user = !Array.isArray(data) ? data as User : null;
    const [showPassword, setShowPassword] = useState(false);
    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+   const [deleting, setDeleting] = useState(false);
    const [exportingPng, setExportingPng] = useState(false);
    const printRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +59,7 @@ export const UserData = ({ editMode }: UserDataProps) => {
       a.href = url;
       a.download = 'tasks.json';
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
    };
 
    const exportCSV = () => {
@@ -72,7 +73,7 @@ export const UserData = ({ editMode }: UserDataProps) => {
       a.href = url;
       a.download = 'tasks.csv';
       a.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
    };
 
    const exportPNG = async () => {
@@ -91,6 +92,23 @@ export const UserData = ({ editMode }: UserDataProps) => {
          a.click();
       } finally {
          setExportingPng(false);
+      }
+   };
+
+   const handleDeleteAccount = async () => {
+      setDeleting(true);
+      try {
+         // Сначала удаляем все задачи пользователя
+         await Promise.all(todos.map(t => delTodo(t.id).unwrap()));
+         // Затем удаляем самого пользователя
+         await deleteUser(id ?? '').unwrap();
+         // Очищаем localStorage и уходим на логин
+         removeKeyFromLocalStorage('user');
+         navigate('/login');
+      } catch (err) {
+         console.error('Failed to delete account:', err);
+         setDeleting(false);
+         setShowDeleteConfirm(false);
       }
    };
 
@@ -261,8 +279,20 @@ export const UserData = ({ editMode }: UserDataProps) => {
                <div className={styles.confirmBlock}>
                   <p className={styles.confirmText}>Are you sure? This cannot be undone.</p>
                   <div className={styles.confirmBtns}>
-                     <button className={styles.confirmDelete}>Yes, delete</button>
-                     <button className={styles.cancelBtn} onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
+                     <button
+                        className={styles.confirmDelete}
+                        onClick={handleDeleteAccount}
+                        disabled={deleting}
+                     >
+                        {deleting ? 'Deleting...' : 'Yes, delete'}
+                     </button>
+                     <button
+                        className={styles.cancelBtn}
+                        onClick={() => setShowDeleteConfirm(false)}
+                        disabled={deleting}
+                     >
+                        Cancel
+                     </button>
                   </div>
                </div>
             )}

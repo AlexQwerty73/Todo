@@ -1,0 +1,143 @@
+.wrapper {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+/* --- Тип повторения --- */
+.typeRow {
+   display: flex;
+   gap: 5px;
+   flex-wrap: wrap;
+}
+
+.typeBtn {
+   padding: 4px 10px;
+   border-radius: 5px;
+   border: 0.5px solid #2a2a2e;
+   background: transparent;
+   color: #666;
+   font-size: 12px;
+   cursor: pointer;
+   transition: all 0.15s;
+}
+
+.typeBtn:hover {
+   color: #e0e0e0;
+   border-color: #444;
+}
+
+.typeBtnActive {
+   border-color: #7c5cfc;
+   color: #7c5cfc;
+   background: rgba(124, 92, 252, 0.1);
+}
+
+/* --- Custom блок --- */
+.customBlock {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   padding: 10px;
+   background: #0e0e10;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+}
+
+.modeRow {
+   display: flex;
+   gap: 6px;
+}
+
+.modeBtn {
+   padding: 3px 10px;
+   border-radius: 4px;
+   border: 0.5px solid #2a2a2e;
+   background: transparent;
+   color: #666;
+   font-size: 11px;
+   cursor: pointer;
+   transition: all 0.15s;
+}
+
+.modeBtnActive {
+   border-color: #7c5cfc;
+   color: #7c5cfc;
+   background: rgba(124, 92, 252, 0.08);
+}
+
+/* --- Every N --- */
+.intervalRow {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   flex-wrap: wrap;
+}
+
+.intervalLabel {
+   font-size: 12px;
+   color: #888;
+}
+
+.intervalInput {
+   width: 52px;
+   padding: 4px 8px;
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 5px;
+   color: #e0e0e0;
+   font-size: 13px;
+   outline: none;
+   text-align: center;
+}
+
+.intervalInput:focus {
+   border-color: #7c5cfc;
+}
+
+.unitRow {
+   display: flex;
+   gap: 4px;
+}
+
+.unitBtn {
+   padding: 3px 8px;
+   border-radius: 4px;
+   border: 0.5px solid #2a2a2e;
+   background: transparent;
+   color: #666;
+   font-size: 11px;
+   cursor: pointer;
+   transition: all 0.15s;
+}
+
+.unitBtnActive {
+   border-color: #7c5cfc;
+   color: #7c5cfc;
+   background: rgba(124, 92, 252, 0.08);
+}
+
+/* --- Дни недели --- */
+.weekdaysRow {
+   display: flex;
+   gap: 4px;
+}
+
+.dayBtn {
+   width: 32px;
+   height: 28px;
+   border-radius: 4px;
+   border: 0.5px solid #2a2a2e;
+   background: transparent;
+   color: #666;
+   font-size: 11px;
+   cursor: pointer;
+   transition: all 0.15s;
+}
+
+.dayBtnActive {
+   border-color: #7c5cfc;
+   color: #7c5cfc;
+   background: rgba(124, 92, 252, 0.15);
+   font-weight: 600;
+}

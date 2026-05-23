@@ -16,11 +16,13 @@ export const LoginForm = () => {
       email: '',
       password: '',
    });
+   const [error, setError] = useState('');
 
    const userData = useUserByEmail(formData.email);
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
+      setError('');
       setFormData((prevData) => ({
          ...prevData,
          [name]: value,
@@ -30,18 +32,14 @@ export const LoginForm = () => {
    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       try {
-         if (!userData) {
-            console.log('User not found');
+         if (!userData || formData.password !== userData.password) {
+            setError('Invalid email or password');
             return;
          }
-         if (formData.password === userData.password) {
-            saveToLocalStorage('user', String(userData.id));
-            navigate(`/user/${userData.id}`);
-         } else {
-            console.log('Invalid email or password');
-         }
-      } catch (error) {
-         console.error('Error during login:', error);
+         saveToLocalStorage('user', String(userData.id));
+         navigate(`/user/${userData.id}`);
+      } catch (err) {
+         setError('Something went wrong. Please try again.');
       }
    };
 
@@ -60,6 +58,7 @@ export const LoginForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  className={error ? styles.inputError : ''}
                />
             </label>
 
@@ -70,8 +69,11 @@ export const LoginForm = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
+                  className={error ? styles.inputError : ''}
                />
             </label>
+
+            {error && <p className={styles.error}>{error}</p>}
 
             <div className={styles.btns}>
                <button type="submit">Log In</button>

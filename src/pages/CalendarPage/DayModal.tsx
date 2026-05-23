@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import styles from './DayModal.module.css';
-import { Todo, Subtask, Priority } from '../../redux/todosApi';
+import { Todo, Subtask, Priority, Recurrence } from '../../redux/todosApi';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { useToast } from '../../context/ToastContext';
-import { loadFromLocalStorage } from '../../utils';
+import { loadFromLocalStorage, getRecurrenceLabel } from '../../utils';
+import { RecurrencePicker } from '../../components/RecurrencePicker';
 
 interface DayModalProps {
    date: Date;
@@ -16,7 +17,7 @@ const toDatetimeLocal = (date: Date) => {
    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T00:00`;
 };
 
-const generateId = () => Math.random().toString(36).slice(2, 6);
+const generateId = () => crypto.randomUUID();
 
 const priorityColors: Record<Priority, string> = {
    high: '#f07070',
@@ -38,14 +39,14 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
    const [newDesc, setNewDesc] = useState('');
    const [newDeadline, setNewDeadline] = useState(toDatetimeLocal(date));
    const [newPriority, setNewPriority] = useState<Priority>('medium');
+   const [newRecurrence, setNewRecurrence] = useState<Recurrence | undefined>(undefined);
 
    const [editingId, setEditingId] = useState<string | null>(null);
    const [editTitle, setEditTitle] = useState('');
    const [editDesc, setEditDesc] = useState('');
    const [editDeadline, setEditDeadline] = useState('');
    const [editPriority, setEditPriority] = useState<Priority>('medium');
-
-   const [newSubtasks, setNewSubtasks] = useState<string>('');
+   const [editRecurrence, setEditRecurrence] = useState<Recurrence | undefined>(undefined);
 
    const formatted = date.toLocaleDateString([], {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -72,6 +73,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
          deadline: newDeadline || undefined,
          priority: newPriority,
          subtasks: [],
+         recurrence: newRecurrence,
       }).unwrap();
       addHistory({ userId, action: 'added', title: newTitle.trim(), timestamp: new Date().toISOString() });
       showToast('Task added');
@@ -79,6 +81,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       setNewDesc('');
       setNewDeadline(toDatetimeLocal(date));
       setNewPriority('medium');
+      setNewRecurrence(undefined);
       setShowAdd(false);
    };
 
@@ -88,10 +91,11 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       setEditDesc(todo.description ?? '');
       setEditDeadline(todo.deadline ?? '');
       setEditPriority(todo.priority ?? 'medium');
+      setEditRecurrence(todo.recurrence);
    };
 
    const handleSave = (todo: Todo) => {
-      updateTodo({ ...todo, title: editTitle, description: editDesc, deadline: editDeadline || undefined, priority: editPriority }).unwrap();
+      updateTodo({ ...todo, title: editTitle, description: editDesc, deadline: editDeadline || undefined, priority: editPriority, recurrence: editRecurrence }).unwrap();
       addHistory({ userId, action: 'updated', title: editTitle, timestamp: new Date().toISOString() });
       showToast('Task updated');
       setEditingId(null);
@@ -160,6 +164,10 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                               <label className={styles.editLabel}>Deadline</label>
                               <input type="datetime-local" className={styles.editDeadlineInput} value={editDeadline} onChange={e => setEditDeadline(e.target.value)} />
                            </div>
+                           <div className={styles.editDeadlineRow}>
+                              <label className={styles.editLabel}>Repeat</label>
+                              <RecurrencePicker value={editRecurrence} onChange={setEditRecurrence} />
+                           </div>
                            <div className={styles.editActions}>
                               <button className={styles.saveBtn} onClick={() => handleSave(todo)}>Save</button>
                               <button className={styles.cancelBtn} onClick={() => setEditingId(null)}>Cancel</button>
@@ -175,6 +183,11 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                                  {todo.deadline && (
                                     <span className={styles.itemTime}>
                                        {new Date(todo.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                 )}
+                                 {todo.recurrence && (
+                                    <span className={styles.recurrenceBadge}>
+                                       🔁 {getRecurrenceLabel(todo.recurrence)}
                                     </span>
                                  )}
 
@@ -241,6 +254,10 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                   <div className={styles.editDeadlineRow}>
                      <label className={styles.editLabel}>Deadline</label>
                      <input type="datetime-local" className={styles.editDeadlineInput} value={newDeadline} onChange={e => setNewDeadline(e.target.value)} />
+                  </div>
+                  <div className={styles.editDeadlineRow}>
+                     <label className={styles.editLabel}>Repeat</label>
+                     <RecurrencePicker value={newRecurrence} onChange={setNewRecurrence} />
                   </div>
                   <div className={styles.editActions}>
                      <button className={styles.saveBtn} onClick={handleAdd}>Add task</button>

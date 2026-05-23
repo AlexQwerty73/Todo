@@ -3,6 +3,17 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const baseUrl = 'http://localhost:3001/';
 
 export type Priority = 'high' | 'medium' | 'low';
+export type RecurrenceType = 'daily' | 'weekly' | 'monthly' | 'custom';
+export type IntervalUnit = 'days' | 'weeks' | 'months';
+
+export interface Recurrence {
+   type: RecurrenceType;
+   // Свой вариант А: каждые N единиц
+   interval?: number;
+   intervalUnit?: IntervalUnit;
+   // Свой вариант Б: конкретные дни недели (0=Пн … 6=Вс)
+   weekDays?: number[];
+}
 
 export interface Subtask {
    id: string;
@@ -19,6 +30,7 @@ export interface Todo {
    deadline?: string;
    priority?: Priority;
    subtasks?: Subtask[];
+   recurrence?: Recurrence;
 }
 
 export interface AddTodoBody {
@@ -29,6 +41,7 @@ export interface AddTodoBody {
    deadline?: string;
    priority?: Priority;
    subtasks?: Subtask[];
+   recurrence?: Recurrence;
 }
 
 export const todosApi = createApi({

@@ -112,6 +112,7 @@
 .itemTitle { font-size: 13px; color: #d0d0d0; }
 .itemDesc { font-size: 11px; color: #555; }
 .itemTime { font-size: 11px; color: #7c5cfc; }
+.recurrenceBadge { font-size: 10px; color: #7c5cfc; opacity: 0.85; }
 
 .editBtn {
    background: transparent;

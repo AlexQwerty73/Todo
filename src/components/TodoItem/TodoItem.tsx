@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './todo.module.css';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddHistoryMutation } from '../../redux';
-import { Todo, Priority, Subtask } from '../../redux/todosApi';
+import { Todo, Priority, Subtask, Recurrence } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
-import { loadFromLocalStorage } from '../../utils';
+import { loadFromLocalStorage, getRecurrenceLabel } from '../../utils';
+import { RecurrencePicker } from '../RecurrencePicker';
 
 interface TodoItemProps {
    index: number;
@@ -18,7 +19,7 @@ const priorityColors: Record<Priority, string> = {
 
 const priorityOptions: Priority[] = ['high', 'medium', 'low'];
 
-const generateId = () => Math.random().toString(36).slice(2, 6);
+const generateId = () => crypto.randomUUID();
 
 export const TodoItem = ({ index, todo }: TodoItemProps) => {
    const [isEdit, setIsEdit] = useState(false);
@@ -26,12 +27,17 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
    const [inputDescription, setInputDescription] = useState(todo.description ?? '');
    const [inputDeadline, setInputDeadline] = useState(todo.deadline ?? '');
    const [inputPriority, setInputPriority] = useState<Priority>(todo.priority ?? 'medium');
+   const [inputRecurrence, setInputRecurrence] = useState<Recurrence | undefined>(todo.recurrence);
    const [subtasks, setSubtasks] = useState<Subtask[]>(todo.subtasks ?? []);
    const [newSubtask, setNewSubtask] = useState('');
    const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
    const [editingSubtaskTitle, setEditingSubtaskTitle] = useState('');
    const [checkBox, setCheckBox] = useState(todo.completed);
    const [removing, setRemoving] = useState(false);
+
+   // Синхронизируем локальный стейт с пропсами когда RTK Query перезагружает данные
+   useEffect(() => { setSubtasks(todo.subtasks ?? []); }, [todo.subtasks]);
+   useEffect(() => { setCheckBox(todo.completed); }, [todo.completed]);
 
    const [updateTodo] = useUpdateTodoMutation();
    const [delTodo] = useDelTodoMutation();
@@ -90,7 +96,8 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       const changed = inputTitle !== todo.title
          || inputDescription !== (todo.description ?? '')
          || inputDeadline !== (todo.deadline ?? '')
-         || inputPriority !== (todo.priority ?? 'medium');
+         || inputPriority !== (todo.priority ?? 'medium')
+         || JSON.stringify(inputRecurrence) !== JSON.stringify(todo.recurrence);
 
       if (changed) {
          updateTodo({
@@ -100,6 +107,7 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
             deadline: inputDeadline || undefined,
             priority: inputPriority,
             subtasks,
+            recurrence: inputRecurrence,
          }).unwrap();
          logHistory('updated', inputTitle);
          showToast('Task updated');
@@ -144,6 +152,11 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                      )}
                      {todo.description && (
                         <span className={styles.description}>{todo.description}</span>
+                     )}
+                     {todo.recurrence && (
+                        <span className={styles.recurrenceBadge}>
+                           🔁 {getRecurrenceLabel(todo.recurrence)}
+                        </span>
                      )}
 
                      {/* Subtasks view */}
@@ -250,6 +263,10 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                            onChange={e => setInputDeadline(e.target.value)}
                            className={styles.editDeadlineInput}
                         />
+                     </div>
+                     <div className={styles.editDeadlineRow}>
+                        <label className={styles.editDeadlineLabel}>Repeat</label>
+                        <RecurrencePicker value={inputRecurrence} onChange={setInputRecurrence} />
                      </div>
                      <button onClick={onSaveHandler} className={styles.saveBtn}>Save</button>
                   </div>

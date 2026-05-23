@@ -3,7 +3,8 @@ import styles from './addTodoForm.module.css';
 import { useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { loadFromLocalStorage } from '../../utils';
 import { useToast } from '../../context/ToastContext';
-import { Priority } from '../../redux/todosApi';
+import { Priority, Recurrence } from '../../redux/todosApi';
+import { RecurrencePicker } from '../RecurrencePicker';
 
 const priorityOptions: { value: Priority; label: string; color: string }[] = [
    { value: 'high', label: 'High', color: '#f07070' },
@@ -16,6 +17,7 @@ export const AddTodoForm = () => {
    const [description, setDescription] = useState('');
    const [deadline, setDeadline] = useState('');
    const [priority, setPriority] = useState<Priority>('medium');
+   const [recurrence, setRecurrence] = useState<Recurrence | undefined>(undefined);
    const [expanded, setExpanded] = useState(false);
 
    const [addTodo] = useAddTodoMutation();
@@ -33,6 +35,7 @@ export const AddTodoForm = () => {
          description: description.trim(),
          deadline: deadline || undefined,
          priority,
+         recurrence,
       }).unwrap();
 
       addHistory({
@@ -47,6 +50,7 @@ export const AddTodoForm = () => {
       setDescription('');
       setDeadline('');
       setPriority('medium');
+      setRecurrence(undefined);
       setExpanded(false);
    };
 
@@ -108,6 +112,10 @@ export const AddTodoForm = () => {
                      value={deadline}
                      onChange={e => setDeadline(e.target.value)}
                   />
+               </div>
+               <div className={styles.deadlineRow}>
+                  <label className={styles.deadlineLabel}>Repeat</label>
+                  <RecurrencePicker value={recurrence} onChange={setRecurrence} />
                </div>
             </div>
          )}

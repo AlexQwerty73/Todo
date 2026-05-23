@@ -5,4 +5,5 @@ export * from './TodosList';
 export * from './TodoItem';
 export * from './AddTodoForm';
 export * from './UserData';
-export * from './UserDataEditForm';;
+export * from './UserDataEditForm';
+export * from './RecurrencePicker';

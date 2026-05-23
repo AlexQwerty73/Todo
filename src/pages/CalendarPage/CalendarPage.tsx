@@ -4,6 +4,7 @@ import { useGetTodosByUserIdQuery } from '../../redux';
 import { Todo } from '../../redux/todosApi';
 import styles from './CalendarPage.module.css';
 import { DayModal } from './DayModal';
+import { isTodoOnDate } from '../../utils';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -26,15 +27,8 @@ export const CalendarPage = () => {
    const totalCells = startOffset + lastDay.getDate();
    const cells = Math.ceil(totalCells / 7) * 7;
 
-   const getTodosForDay = (date: Date): Todo[] => {
-      return todos.filter(todo => {
-         if (!todo.deadline) return false;
-         const d = new Date(todo.deadline);
-         return d.getFullYear() === date.getFullYear()
-            && d.getMonth() === date.getMonth()
-            && d.getDate() === date.getDate();
-      });
-   };
+   const getTodosForDay = (date: Date): Todo[] =>
+      todos.filter(todo => isTodoOnDate(todo, date));
 
    const prevMonth = () => {
       if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(y => y - 1); }
