@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import styles from './todo.module.css';
-import { useDelTodoMutation, useUpdateTodoMutation } from '../../redux';
+import { useDelTodoMutation, useUpdateTodoMutation, useAddHistoryMutation } from '../../redux';
 import { Todo } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
+import { loadFromLocalStorage } from '../../utils';
 
 interface TodoItemProps {
    index: number;
@@ -17,12 +18,25 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
 
    const [updateTodo] = useUpdateTodoMutation();
    const [delTodo] = useDelTodoMutation();
+   const [addHistory] = useAddHistoryMutation();
    const { showToast } = useToast();
+
+   const userId = loadFromLocalStorage<string>('user') ?? '';
+
+   const logHistory = (action: 'added' | 'deleted' | 'completed' | 'reopened' | 'updated', title: string) => {
+      addHistory({
+         userId,
+         action,
+         title,
+         timestamp: new Date().toISOString(),
+      });
+   };
 
    const onChangeHandler = () => {
       setIsEdit(!isEdit);
       if (inputTitle !== todo.title) {
          updateTodo({ ...todo, title: inputTitle }).unwrap();
+         logHistory('updated', inputTitle);
          showToast('Task updated');
       }
    };
@@ -31,14 +45,17 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       setRemoving(true);
       setTimeout(() => {
          delTodo(todo.id);
+         logHistory('deleted', todo.title);
          showToast('Task deleted', 'error');
       }, 250);
    };
 
    const checkBoxHandler = () => {
-      setCheckBox(!checkBox);
-      updateTodo({ ...todo, completed: !todo.completed }).unwrap();
-      showToast(!checkBox ? 'Task completed! ✓' : 'Task reopened');
+      const newCompleted = !checkBox;
+      setCheckBox(newCompleted);
+      updateTodo({ ...todo, completed: newCompleted }).unwrap();
+      logHistory(newCompleted ? 'completed' : 'reopened', todo.title);
+      showToast(newCompleted ? 'Task completed! ✓' : 'Task reopened');
    };
 
    return (

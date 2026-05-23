@@ -18,6 +18,7 @@
             </li>
             <li><Link to={`/user/${id}/todos`} className={styles.item}>Todos</Link></li>
             <li><Link to={`/user/${id}/`} className={styles.item}>User</Link></li>
+            <li><Link to={`/user/${id}/history`} className={styles.item}>History</Link></li>
          </ul>
       );
    };

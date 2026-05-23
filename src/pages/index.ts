@@ -4,3 +4,4 @@ export * from './CreateUserPage';
 export * from './UserTodosPage';
 export * from './UserPage';
 export * from './UserEditPage';
+export * from './HistoryPage';

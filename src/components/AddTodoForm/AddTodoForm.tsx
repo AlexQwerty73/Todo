@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import styles from './addTodoForm.module.css';
-import { useAddTodoMutation } from '../../redux';
+import { useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { loadFromLocalStorage } from '../../utils';
+import { useToast } from '../../context/ToastContext';
 
 export const AddTodoForm = () => {
    const [title, setTitle] = useState('');
    const [addTodo] = useAddTodoMutation();
+   const [addHistory] = useAddHistoryMutation();
+   const { showToast } = useToast();
 
    const handleAdd = () => {
       const userId = loadFromLocalStorage<string>('user');
@@ -18,6 +21,14 @@ export const AddTodoForm = () => {
          completed: false,
       }).unwrap();
 
+      addHistory({
+         userId,
+         action: 'added',
+         title: title.trim(),
+         timestamp: new Date().toISOString(),
+      });
+
+      showToast('Task added');
       setTitle('');
    };
 
