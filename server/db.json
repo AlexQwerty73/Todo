@@ -12,7 +12,7 @@
       "id": "37e6",
       "userId": "88f6",
       "title": "yay",
-      "completed": false,
+      "completed": true,
       "description": "",
       "deadline": ""
     },
@@ -154,6 +154,13 @@
       "action": "deleted",
       "title": "a",
       "timestamp": "2026-05-23T10:51:10.881Z"
+    },
+    {
+      "id": "760b",
+      "userId": "88f6",
+      "action": "completed",
+      "title": "yay",
+      "timestamp": "2026-05-23T11:09:59.970Z"
     }
   ]
 }

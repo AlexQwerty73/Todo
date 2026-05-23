@@ -1,45 +1,113 @@
-/* userPage.module.css */
-.userData {
+.page {
    display: flex;
    flex-direction: column;
-   gap: 8px;
-   max-width: 400px;
+   gap: 12px;
+   max-width: 440px;
+}
+
+.userData {
    background: #1a1a1e;
    border: 0.5px solid #2a2a2e;
    border-radius: 10px;
    padding: 20px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
 }
 
-.userData h3 {
+.profileTop {
+   display: flex;
+   align-items: center;
+   gap: 14px;
+}
+
+.avatar {
+   width: 44px;
+   height: 44px;
+   border-radius: 50%;
+   background: #2a2a3e;
+   border: 0.5px solid #7c5cfc;
+   color: #9a8aff;
    font-size: 14px;
-   font-weight: 400;
+   font-weight: 500;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-shrink: 0;
+}
+
+.profileInfo {
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+}
+
+.profileName {
+   font-size: 15px;
+   font-weight: 500;
+   color: #e0e0e0;
+}
+
+.profileEmail {
+   font-size: 13px;
    color: #888;
 }
 
-.userData h3 span {
+.memberSince {
+   font-size: 11px;
+   color: #555;
+}
+
+.divider {
+   height: 0.5px;
+   background: #2a2a2e;
+}
+
+.fields {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.field {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.fieldLabel {
+   font-size: 13px;
+   color: #888;
+}
+
+.fieldValue {
+   font-size: 13px;
    color: #e0e0e0;
-   font-weight: 500;
+}
+
+.lastActivity {
+   font-size: 12px;
+   color: #555;
+}
+
+.lastActivity span {
+   color: #888;
 }
 
 .btns {
    display: flex;
    gap: 8px;
-   margin-top: 8px;
-}
-
-.actionButton {
-   border-radius: 6px;
-   padding: 7px 14px;
-   font-size: 13px;
-   cursor: pointer;
-   border: none;
-   transition: background 0.15s;
 }
 
 .primary {
    background: #1e1e22;
    color: #888;
    border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   padding: 7px 14px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s, color 0.15s;
 }
 
 .primary:hover {
@@ -50,13 +118,177 @@
 .secondary {
    background: #7c5cfc;
    color: #fff;
+   border: none;
+   border-radius: 6px;
+   padding: 7px 14px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s;
 }
 
-.secondary:hover {
-   background: #6a4ae0;
+.secondary:hover { background: #6a4ae0; }
+
+/* Stats */
+.statsCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 10px;
+   padding: 16px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
 }
 
-.loading {
-   opacity: 0.5;
-   pointer-events: none;
+.statsTitle {
+   font-size: 13px;
+   font-weight: 500;
+   color: #888;
 }
+
+.statsGrid {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 8px;
+}
+
+.statItem {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 2px;
+   background: #0e0e10;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   padding: 8px 4px;
+}
+
+.statOverdue .statNum { color: #f07070; }
+
+.statNum {
+   font-size: 18px;
+   font-weight: 500;
+   color: #e0e0e0;
+}
+
+.statLabel {
+   font-size: 11px;
+   color: #555;
+}
+
+.progressBar {
+   height: 3px;
+   background: #2a2a2e;
+   border-radius: 2px;
+   overflow: hidden;
+}
+
+.progressFill {
+   height: 100%;
+   background: #7c5cfc;
+   border-radius: 2px;
+   transition: width 0.4s ease;
+}
+
+.progressLabel {
+   font-size: 11px;
+   color: #555;
+   text-align: right;
+}
+
+/* Export */
+.exportCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 10px;
+   padding: 16px 24px;
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.exportBtns {
+   display: flex;
+   gap: 8px;
+}
+
+.exportBtn {
+   flex: 1;
+   background: #1e1e22;
+   color: #888;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   padding: 8px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s, color 0.15s;
+}
+
+.exportBtn:hover {
+   background: #2a2a2e;
+   color: #e0e0e0;
+}
+
+/* Danger */
+.dangerCard {
+   background: #1a1a1e;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 10px;
+   padding: 16px 24px;
+}
+
+.deleteBtn {
+   background: transparent;
+   color: #f07070;
+   border: 0.5px solid #5a2a2a;
+   border-radius: 6px;
+   padding: 7px 14px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s;
+}
+
+.deleteBtn:hover { background: #2d1a1a; }
+
+.confirmBlock {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.confirmText {
+   font-size: 13px;
+   color: #888;
+}
+
+.confirmBtns {
+   display: flex;
+   gap: 8px;
+}
+
+.confirmDelete {
+   background: #5a2a2a;
+   color: #f07070;
+   border: none;
+   border-radius: 6px;
+   padding: 7px 14px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s;
+}
+
+.confirmDelete:hover { background: #7a3a3a; }
+
+.cancelBtn {
+   background: transparent;
+   color: #666;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 6px;
+   padding: 7px 14px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s, color 0.15s;
+}
+
+.cancelBtn:hover { background: #2a2a2e; color: #e0e0e0; }
+
+.loading { font-size: 13px; color: #555; }
