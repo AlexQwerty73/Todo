@@ -3,11 +3,19 @@ import styles from './addTodoForm.module.css';
 import { useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { loadFromLocalStorage } from '../../utils';
 import { useToast } from '../../context/ToastContext';
+import { Priority } from '../../redux/todosApi';
+
+const priorityOptions: { value: Priority; label: string; color: string }[] = [
+   { value: 'high', label: 'High', color: '#f07070' },
+   { value: 'medium', label: 'Medium', color: '#e0a060' },
+   { value: 'low', label: 'Low', color: '#4caf7d' },
+];
 
 export const AddTodoForm = () => {
    const [title, setTitle] = useState('');
    const [description, setDescription] = useState('');
    const [deadline, setDeadline] = useState('');
+   const [priority, setPriority] = useState<Priority>('medium');
    const [expanded, setExpanded] = useState(false);
 
    const [addTodo] = useAddTodoMutation();
@@ -24,6 +32,7 @@ export const AddTodoForm = () => {
          completed: false,
          description: description.trim(),
          deadline: deadline || undefined,
+         priority,
       }).unwrap();
 
       addHistory({
@@ -37,6 +46,7 @@ export const AddTodoForm = () => {
       setTitle('');
       setDescription('');
       setDeadline('');
+      setPriority('medium');
       setExpanded(false);
    };
 
@@ -67,6 +77,22 @@ export const AddTodoForm = () => {
 
          {expanded && (
             <div className={styles.details}>
+               <div className={styles.priorityRow}>
+                  {priorityOptions.map(opt => (
+                     <button
+                        key={opt.value}
+                        onClick={() => setPriority(opt.value)}
+                        className={styles.priorityBtn}
+                        style={{
+                           borderColor: priority === opt.value ? opt.color : '#2a2a2e',
+                           color: priority === opt.value ? opt.color : '#666',
+                           background: priority === opt.value ? `${opt.color}18` : 'transparent',
+                        }}
+                     >
+                        {opt.label}
+                     </button>
+                  ))}
+               </div>
                <textarea
                   className={styles.textarea}
                   value={description}

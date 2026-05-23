@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './todo.module.css';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddHistoryMutation } from '../../redux';
-import { Todo } from '../../redux/todosApi';
+import { Todo, Priority, Subtask } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
 import { loadFromLocalStorage } from '../../utils';
 
@@ -10,11 +10,26 @@ interface TodoItemProps {
    todo: Todo;
 }
 
+const priorityColors: Record<Priority, string> = {
+   high: '#f07070',
+   medium: '#e0a060',
+   low: '#4caf7d',
+};
+
+const priorityOptions: Priority[] = ['high', 'medium', 'low'];
+
+const generateId = () => Math.random().toString(36).slice(2, 6);
+
 export const TodoItem = ({ index, todo }: TodoItemProps) => {
    const [isEdit, setIsEdit] = useState(false);
    const [inputTitle, setInputTitle] = useState(todo.title);
    const [inputDescription, setInputDescription] = useState(todo.description ?? '');
    const [inputDeadline, setInputDeadline] = useState(todo.deadline ?? '');
+   const [inputPriority, setInputPriority] = useState<Priority>(todo.priority ?? 'medium');
+   const [subtasks, setSubtasks] = useState<Subtask[]>(todo.subtasks ?? []);
+   const [newSubtask, setNewSubtask] = useState('');
+   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
+   const [editingSubtaskTitle, setEditingSubtaskTitle] = useState('');
    const [checkBox, setCheckBox] = useState(todo.completed);
    const [removing, setRemoving] = useState(false);
 
@@ -39,11 +54,43 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       addHistory({ userId, action, title, timestamp: new Date().toISOString() });
    };
 
+   // Subtask helpers — сохраняют сразу на сервер
+   const saveSubtasks = (updated: Subtask[]) => {
+      setSubtasks(updated);
+      updateTodo({ ...todo, subtasks: updated });
+   };
+
+   const addSubtask = () => {
+      if (!newSubtask.trim()) return;
+      saveSubtasks([...subtasks, { id: generateId(), title: newSubtask.trim(), completed: false }]);
+      setNewSubtask('');
+   };
+
+   const toggleSubtask = (id: string) => {
+      saveSubtasks(subtasks.map(s => s.id === id ? { ...s, completed: !s.completed } : s));
+   };
+
+   const deleteSubtask = (id: string) => {
+      saveSubtasks(subtasks.filter(s => s.id !== id));
+   };
+
+   const startEditSubtask = (subtask: Subtask) => {
+      setEditingSubtaskId(subtask.id);
+      setEditingSubtaskTitle(subtask.title);
+   };
+
+   const saveEditSubtask = (id: string) => {
+      if (!editingSubtaskTitle.trim()) return;
+      saveSubtasks(subtasks.map(s => s.id === id ? { ...s, title: editingSubtaskTitle.trim() } : s));
+      setEditingSubtaskId(null);
+   };
+
    const onSaveHandler = () => {
       setIsEdit(false);
       const changed = inputTitle !== todo.title
          || inputDescription !== (todo.description ?? '')
-         || inputDeadline !== (todo.deadline ?? '');
+         || inputDeadline !== (todo.deadline ?? '')
+         || inputPriority !== (todo.priority ?? 'medium');
 
       if (changed) {
          updateTodo({
@@ -51,6 +98,8 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
             title: inputTitle,
             description: inputDescription,
             deadline: inputDeadline || undefined,
+            priority: inputPriority,
+            subtasks,
          }).unwrap();
          logHistory('updated', inputTitle);
          showToast('Task updated');
@@ -74,8 +123,12 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       showToast(newCompleted ? 'Task completed! ✓' : 'Task reopened');
    };
 
+   const priorityColor = priorityColors[todo.priority ?? 'medium'];
+   const completedSubtasks = subtasks.filter(s => s.completed).length;
+
    return (
       <li className={`${styles.todoItem} ${removing ? styles.removing : ''} ${isOverdue ? styles.overdue : ''}`}>
+         <div className={styles.priorityBar} style={{ background: priorityColor }} />
          <div className={styles.leftPart}>
             <span className={styles.todoIndex}>{index + 1}</span>
             <div className={styles.titleBlock}>
@@ -92,6 +145,69 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                      {todo.description && (
                         <span className={styles.description}>{todo.description}</span>
                      )}
+
+                     {/* Subtasks view */}
+                     {subtasks.length > 0 && (
+                        <div className={styles.subtasksBlock}>
+                           <div className={styles.subtasksHeader}>
+                              <span className={styles.subtasksProgress}>
+                                 {completedSubtasks}/{subtasks.length} subtasks
+                              </span>
+                              <div className={styles.subtasksBar}>
+                                 <div
+                                    className={styles.subtasksFill}
+                                    style={{ width: `${subtasks.length > 0 ? (completedSubtasks / subtasks.length) * 100 : 0}%` }}
+                                 />
+                              </div>
+                           </div>
+                           <ul className={styles.subtasksList}>
+                              {subtasks.map(s => (
+                                 <li key={s.id} className={styles.subtaskItem}>
+                                    <input
+                                       type="checkbox"
+                                       checked={s.completed}
+                                       onChange={() => toggleSubtask(s.id)}
+                                       className={styles.subtaskCheckbox}
+                                       id={`sub-${s.id}`}
+                                    />
+                                    <label htmlFor={`sub-${s.id}`} className={styles.subtaskCustomCheck} />
+                                    <label
+                                       htmlFor={`sub-${s.id}`}
+                                       className={`${styles.subtaskLabel} ${s.completed ? styles.subtaskDone : ''}`}
+                                    >
+                                       {editingSubtaskId === s.id ? (
+                                          <input
+                                             className={styles.subtaskEditInput}
+                                             value={editingSubtaskTitle}
+                                             onChange={e => setEditingSubtaskTitle(e.target.value)}
+                                             onBlur={() => saveEditSubtask(s.id)}
+                                             onKeyDown={e => e.key === 'Enter' && saveEditSubtask(s.id)}
+                                             autoFocus
+                                             onClick={e => e.preventDefault()}
+                                          />
+                                       ) : s.title}
+                                    </label>
+                                    <button className={styles.subtaskAction} onClick={() => startEditSubtask(s)}>✎</button>
+                                    <button className={`${styles.subtaskAction} ${styles.subtaskDel}`} onClick={() => deleteSubtask(s.id)}>✕</button>
+                                 </li>
+                              ))}
+                           </ul>
+                        </div>
+                     )}
+
+                     {/* Add subtask input */}
+                     <div className={styles.addSubtaskRow}>
+                        <input
+                           className={styles.addSubtaskInput}
+                           value={newSubtask}
+                           onChange={e => setNewSubtask(e.target.value)}
+                           onKeyDown={e => e.key === 'Enter' && addSubtask()}
+                           placeholder="+ Add subtask"
+                        />
+                        {newSubtask && (
+                           <button className={styles.addSubtaskBtn} onClick={addSubtask}>Add</button>
+                        )}
+                     </div>
                   </>
                ) : (
                   <div className={styles.editBlock}>
@@ -103,6 +219,22 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                         placeholder="Title"
                         autoFocus
                      />
+                     <div className={styles.editPriorityRow}>
+                        {priorityOptions.map(p => (
+                           <button
+                              key={p}
+                              onClick={() => setInputPriority(p)}
+                              className={styles.editPriorityBtn}
+                              style={{
+                                 borderColor: inputPriority === p ? priorityColors[p] : '#2a2a2e',
+                                 color: inputPriority === p ? priorityColors[p] : '#666',
+                                 background: inputPriority === p ? `${priorityColors[p]}18` : 'transparent',
+                              }}
+                           >
+                              {p}
+                           </button>
+                        ))}
+                     </div>
                      <textarea
                         value={inputDescription}
                         onChange={e => setInputDescription(e.target.value)}

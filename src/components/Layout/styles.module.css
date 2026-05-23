@@ -3,10 +3,12 @@
   flex-direction: column;
   border-right: 0.5px solid #2a2a2e;
   min-height: 100vh;
-  min-width: 160px;
+  width: 200px;
+  flex-shrink: 0;
 }
 
 .outLet {
-  padding: 24px;
+  padding: 32px 40px;
   flex: 1;
+  min-width: 0;
 }

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUsersQuery, useGetTodosByUserIdQuery, useGetHistoryQuery } from '../../redux';
 import { User } from '../../redux/usersApi';
 import styles from './userPage.module.css';
+import html2canvas from 'html2canvas';
 
 interface UserDataProps {
    editMode?: boolean;
@@ -18,15 +19,15 @@ export const UserData = ({ editMode }: UserDataProps) => {
    const user = !Array.isArray(data) ? data as User : null;
    const [showPassword, setShowPassword] = useState(false);
    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+   const [exportingPng, setExportingPng] = useState(false);
+   const printRef = useRef<HTMLDivElement>(null);
 
-   // Stats
    const totalTasks = todos.length;
    const completedTasks = todos.filter(t => t.completed).length;
    const activeTasks = totalTasks - completedTasks;
    const overdueTasks = todos.filter(t => t.deadline && !t.completed && new Date(t.deadline) < new Date()).length;
    const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-   // Last activity
    const lastAction = history.length > 0
       ? [...history].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0]
       : null;
@@ -42,7 +43,6 @@ export const UserData = ({ editMode }: UserDataProps) => {
       return `${days} day${days > 1 ? 's' : ''} ago`;
    };
 
-   // Member since — first history entry
    const firstAction = history.length > 0
       ? [...history].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())[0]
       : null;
@@ -51,7 +51,6 @@ export const UserData = ({ editMode }: UserDataProps) => {
       ? new Date(firstAction.timestamp).toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' })
       : null;
 
-   // Export
    const exportJSON = () => {
       const blob = new Blob([JSON.stringify(todos, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -74,6 +73,25 @@ export const UserData = ({ editMode }: UserDataProps) => {
       a.download = 'tasks.csv';
       a.click();
       URL.revokeObjectURL(url);
+   };
+
+   const exportPNG = async () => {
+      if (!printRef.current) return;
+      setExportingPng(true);
+      try {
+         const canvas = await html2canvas(printRef.current, {
+            backgroundColor: '#0e0e10',
+            scale: 2,
+            useCORS: true,
+         });
+         const url = canvas.toDataURL('image/png');
+         const a = document.createElement('a');
+         a.href = url;
+         a.download = 'tasks.png';
+         a.click();
+      } finally {
+         setExportingPng(false);
+      }
    };
 
    if (isLoading) return <div className={styles.userData}><p className={styles.loading}>Loading...</p></div>;
@@ -152,6 +170,67 @@ export const UserData = ({ editMode }: UserDataProps) => {
             <p className={styles.progressLabel}>{progressPercent}% completed</p>
          </div>
 
+         {/* PNG preview — скрытый блок который снимается */}
+         <div
+            ref={printRef}
+            style={{
+               position: 'absolute',
+               left: '-9999px',
+               top: 0,
+               width: '600px',
+               background: '#0e0e10',
+               padding: '24px',
+               fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
+            }}
+         >
+            <p style={{ color: '#888', fontSize: '12px', marginBottom: '16px' }}>
+               {user?.name} — tasks export — {new Date().toLocaleDateString()}
+            </p>
+            {todos.map((todo, i) => (
+               <div key={todo.id} style={{
+                  background: '#1a1a1e',
+                  border: '0.5px solid #2a2a2e',
+                  borderRadius: '6px',
+                  padding: '10px 14px',
+                  marginBottom: '6px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '10px',
+               }}>
+                  <span style={{ color: '#555', fontSize: '12px', minWidth: '20px' }}>{i + 1}</span>
+                  <div style={{ flex: 1 }}>
+                     <p style={{
+                        color: todo.completed ? '#555' : '#d0d0d0',
+                        fontSize: '14px',
+                        textDecoration: todo.completed ? 'line-through' : 'none',
+                     }}>
+                        {todo.title}
+                     </p>
+                     {todo.description && (
+                        <p style={{ color: '#555', fontSize: '12px', marginTop: '2px' }}>{todo.description}</p>
+                     )}
+                     {todo.deadline && (
+                        <p style={{ color: '#7c5cfc', fontSize: '11px', marginTop: '2px' }}>
+                           ⏱ {new Date(todo.deadline).toLocaleString([], {
+                              day: '2-digit', month: '2-digit', year: 'numeric',
+                              hour: '2-digit', minute: '2-digit',
+                           })}
+                        </p>
+                     )}
+                  </div>
+                  <span style={{
+                     fontSize: '11px',
+                     padding: '2px 8px',
+                     borderRadius: '4px',
+                     background: todo.completed ? '#1e2a1e' : '#1e1e2e',
+                     color: todo.completed ? '#4a7a4a' : '#7c5cfc',
+                  }}>
+                     {todo.completed ? 'done' : 'active'}
+                  </span>
+               </div>
+            ))}
+         </div>
+
          {/* Export card */}
          <div className={styles.exportCard}>
             <p className={styles.statsTitle}>Export tasks</p>
@@ -161,6 +240,13 @@ export const UserData = ({ editMode }: UserDataProps) => {
                </button>
                <button className={styles.exportBtn} onClick={exportCSV}>
                   Download CSV
+               </button>
+               <button
+                  className={styles.exportBtn}
+                  onClick={exportPNG}
+                  disabled={exportingPng}
+               >
+                  {exportingPng ? 'Generating...' : 'Download PNG'}
                </button>
             </div>
          </div>

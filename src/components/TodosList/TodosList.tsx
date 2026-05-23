@@ -9,8 +9,11 @@ interface TodosListProps {
    todos?: Todo[];
 }
 
+const PAGE_SIZE = 7;
+
 export const TodosList = ({ todos }: TodosListProps) => {
    const [filter, setFilter] = useState<Filter>('all');
+   const [page, setPage] = useState(1);
 
    if (!todos) return <p className={styles.loading}>Loading...</p>;
 
@@ -20,7 +23,14 @@ export const TodosList = ({ todos }: TodosListProps) => {
       return true;
    });
 
+   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
    const completedCount = todos.filter(t => t.completed).length;
+
+   const handleFilter = (f: Filter) => {
+      setFilter(f);
+      setPage(1);
+   };
 
    return (
       <div>
@@ -32,7 +42,7 @@ export const TodosList = ({ todos }: TodosListProps) => {
                {(['all', 'active', 'completed'] as Filter[]).map(f => (
                   <button
                      key={f}
-                     onClick={() => setFilter(f)}
+                     onClick={() => handleFilter(f)}
                      className={`${styles.filterBtn} ${filter === f ? styles.active : ''}`}
                   >
                      {f}
@@ -42,9 +52,9 @@ export const TodosList = ({ todos }: TodosListProps) => {
          </div>
 
          <ul className={styles.list}>
-            {filtered.length > 0
-               ? filtered.map((todo, index) =>
-                  <TodoItem key={todo.id} index={index} todo={todo} />
+            {paginated.length > 0
+               ? paginated.map((todo, index) =>
+                  <TodoItem key={todo.id} index={(page - 1) * PAGE_SIZE + index} todo={todo} />
                )
                : (
                   <div className={styles.empty}>
@@ -57,6 +67,46 @@ export const TodosList = ({ todos }: TodosListProps) => {
                )
             }
          </ul>
+
+         {totalPages > 1 && (
+            <div className={styles.pagination}>
+               <button
+                  className={styles.pageBtn}
+                  onClick={() => setPage(p => p - 1)}
+                  disabled={page === 1}
+               >
+                  ‹
+               </button>
+
+               {Array.from({ length: totalPages }).map((_, i) => {
+                  const p = i + 1;
+                  if (totalPages <= 7 || p === 1 || p === totalPages || Math.abs(p - page) <= 1) {
+                     return (
+                        <button
+                           key={p}
+                           onClick={() => setPage(p)}
+                           className={`${styles.pageBtn} ${page === p ? styles.pageBtnActive : ''}`}
+                        >
+                           {p}
+                        </button>
+                     );
+                  }
+                  if (Math.abs(p - page) === 2) {
+                     return <span key={p} className={styles.pageDots}>…</span>;
+                  }
+                  return null;
+               })}
+
+               <button
+                  className={styles.pageBtn}
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={page === totalPages}
+               >
+                  ›
+               </button>
+            </div>
+         )}
+
       </div>
    );
 };

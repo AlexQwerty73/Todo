@@ -140,3 +140,183 @@
 .btnActive { border-color: #7c5cfc; color: #7c5cfc; }
 
 .delBtn:hover { background: #2d1a1a; border-color: #5a2a2a; color: #f07070; }
+
+.priorityBar {
+   width: 3px;
+   align-self: stretch;
+   border-radius: 2px;
+   flex-shrink: 0;
+   margin-right: 4px;
+}
+
+.editPriorityRow {
+   display: flex;
+   gap: 6px;
+}
+
+.editPriorityBtn {
+   flex: 1;
+   padding: 4px 0;
+   border-radius: 5px;
+   border: 0.5px solid;
+   font-size: 12px;
+   cursor: pointer;
+   transition: all 0.15s;
+   text-transform: capitalize;
+}
+
+.subtasksBlock {
+   margin-top: 6px;
+   display: flex;
+   flex-direction: column;
+   gap: 6px;
+}
+
+.subtasksHeader {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.subtasksProgress {
+   font-size: 11px;
+   color: #555;
+   white-space: nowrap;
+}
+
+.subtasksBar {
+   flex: 1;
+   height: 2px;
+   background: #2a2a2e;
+   border-radius: 2px;
+   overflow: hidden;
+}
+
+.subtasksFill {
+   height: 100%;
+   background: #7c5cfc;
+   border-radius: 2px;
+   transition: width 0.3s ease;
+}
+
+.subtasksList {
+   display: flex;
+   flex-direction: column;
+   gap: 3px;
+}
+
+.subtaskItem {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+}
+
+.subtaskCheckbox {
+   width: 12px;
+   height: 12px;
+   accent-color: #7c5cfc;
+   cursor: pointer;
+   flex-shrink: 0;
+}
+
+.subtaskLabel {
+   flex: 1;
+   font-size: 12px;
+   color: #aaa;
+   cursor: pointer;
+}
+
+.subtaskDone {
+   color: #444;
+   text-decoration: line-through;
+}
+
+.subtaskEditInput {
+   background: transparent;
+   border: none;
+   border-bottom: 0.5px solid #7c5cfc;
+   color: #e0e0e0;
+   font-size: 12px;
+   outline: none;
+   width: 100%;
+}
+
+.subtaskAction {
+   background: transparent;
+   border: none;
+   color: #444;
+   font-size: 11px;
+   cursor: pointer;
+   padding: 2px 4px;
+   border-radius: 3px;
+   transition: color 0.15s;
+   flex-shrink: 0;
+}
+
+.subtaskAction:hover { color: #888; }
+.subtaskDel:hover { color: #f07070 !important; }
+
+.addSubtaskRow {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   margin-top: 4px;
+}
+
+.addSubtaskInput {
+   flex: 1;
+   background: transparent;
+   border: none;
+   border-bottom: 0.5px solid #2a2a2e;
+   color: #666;
+   font-size: 12px;
+   outline: none;
+   padding: 3px 0;
+   transition: border-color 0.15s, color 0.15s;
+}
+
+.addSubtaskInput:focus {
+   border-color: #7c5cfc;
+   color: #e0e0e0;
+}
+
+.addSubtaskInput::placeholder { color: #333; }
+
+.addSubtaskBtn {
+   background: transparent;
+   border: 0.5px solid #7c5cfc;
+   border-radius: 4px;
+   color: #7c5cfc;
+   font-size: 11px;
+   padding: 2px 8px;
+   cursor: pointer;
+   transition: background 0.15s;
+}
+
+.addSubtaskBtn:hover { background: #7c5cfc22; }
+
+.subtaskCheckbox {
+   display: none;
+}
+
+.subtaskItem {
+   display: flex;
+   align-items: center;
+   gap: 6px;
+   cursor: pointer;
+}
+
+.subtaskCustomCheck {
+   width: 12px;
+   height: 12px;
+   border-radius: 3px;
+   border: 1.5px solid #444;
+   flex-shrink: 0;
+   transition: background 0.15s, border-color 0.15s;
+   display: block;
+}
+
+.subtaskCheckbox:checked + .subtaskCustomCheck {
+   background: #7c5cfc;
+   border-color: #7c5cfc;
+}

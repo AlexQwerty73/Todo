@@ -1,8 +1,9 @@
-.page { max-width: 700px; }
+/* .page { max-width: 700px; } */
 
 .header {
    display: flex;
    align-items: center;
+   justify-content: center;
    gap: 16px;
    margin-bottom: 16px;
 }

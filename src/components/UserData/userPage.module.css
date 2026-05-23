@@ -1,8 +1,8 @@
 .page {
-   display: flex;
-   flex-direction: column;
-   gap: 12px;
-   max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* max-width: 800px; */
 }
 
 .userData {

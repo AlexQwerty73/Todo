@@ -71,3 +71,49 @@
    font-size: 12px;
    color: #444 !important;
 }
+
+.pagination {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 4px;
+   margin-top: 16px;
+}
+
+.pageBtn {
+   min-width: 32px;
+   height: 32px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: transparent;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 5px;
+   color: #666;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s, color 0.15s;
+   padding: 0 6px;
+}
+
+.pageBtn:hover:not(:disabled) {
+   background: #1e1e22;
+   color: #e0e0e0;
+}
+
+.pageBtn:disabled {
+   opacity: 0.3;
+   cursor: default;
+}
+
+.pageBtnActive {
+   background: #1e1e22;
+   border-color: #7c5cfc;
+   color: #e0e0e0;
+}
+
+.pageDots {
+   font-size: 13px;
+   color: #444;
+   padding: 0 4px;
+}

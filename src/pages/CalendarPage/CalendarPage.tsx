@@ -81,6 +81,7 @@ export const CalendarPage = () => {
                            <span
                               key={todo.id}
                               className={`${styles.chip} ${todo.completed ? styles.chipDone : ''}`}
+                              style={{ borderLeft: `2px solid ${todo.priority === 'high' ? '#f07070' : todo.priority === 'low' ? '#4caf7d' : '#e0a060'}` }}
                            >
                               {todo.title.length > 12 ? todo.title.slice(0, 12) + '…' : todo.title}
                            </span>

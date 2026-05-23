@@ -2,7 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseUrl = 'http://localhost:3001/';
 
-// Types for the data we work with
+export type Priority = 'high' | 'medium' | 'low';
+
+export interface Subtask {
+   id: string;
+   title: string;
+   completed: boolean;
+}
+
 export interface Todo {
    id: string;
    userId: string;
@@ -10,6 +17,8 @@ export interface Todo {
    completed: boolean;
    description?: string;
    deadline?: string;
+   priority?: Priority;
+   subtasks?: Subtask[];
 }
 
 export interface AddTodoBody {
@@ -18,9 +27,10 @@ export interface AddTodoBody {
    completed: boolean;
    description?: string;
    deadline?: string;
+   priority?: Priority;
+   subtasks?: Subtask[];
 }
 
-// Creating API for working with todos
 export const todosApi = createApi({
    reducerPath: 'todosApi',
    tagTypes: ['Todos'],
@@ -28,7 +38,6 @@ export const todosApi = createApi({
 
    endpoints: (build) => ({
 
-      // Get all todos
       getTodos: build.query<Todo[], string | undefined>({
          query: (limit = '') => `todos${limit && `?_limit=${limit}`}`,
          providesTags: (result) =>
@@ -40,7 +49,6 @@ export const todosApi = createApi({
                : [{ type: 'Todos' as const, id: 'LIST' }],
       }),
 
-      // Get todos by user ID
       getTodosByUserId: build.query<Todo[], string>({
          query: (userId) => `todos?userId=${userId}`,
          providesTags: (result, error, userId) =>
@@ -52,7 +60,6 @@ export const todosApi = createApi({
                : [{ type: 'Todos' as const, id: 'LIST', userId }],
       }),
 
-      // Add a new todo
       addTodo: build.mutation<Todo, AddTodoBody>({
          query: (body) => ({
             url: 'todos',
@@ -62,7 +69,6 @@ export const todosApi = createApi({
          invalidatesTags: [{ type: 'Todos', id: 'LIST' }],
       }),
 
-      // Delete a todo
       delTodo: build.mutation<void, string>({
          query: (id) => ({
             url: `todos/${id}`,
@@ -71,7 +77,6 @@ export const todosApi = createApi({
          invalidatesTags: [{ type: 'Todos', id: 'LIST' }],
       }),
 
-      // Update a todo
       updateTodo: build.mutation<Todo, Todo>({
          query: (body) => ({
             url: `todos/${body.id}`,
@@ -84,7 +89,6 @@ export const todosApi = createApi({
    }),
 });
 
-// Exporting hooks for each API operation
 export const {
    useAddTodoMutation,
    useGetTodosQuery,

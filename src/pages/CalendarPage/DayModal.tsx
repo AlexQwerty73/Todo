@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styles from './DayModal.module.css';
-import { Todo } from '../../redux/todosApi';
+import { Todo, Subtask, Priority } from '../../redux/todosApi';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { useToast } from '../../context/ToastContext';
 import { loadFromLocalStorage } from '../../utils';
@@ -16,6 +16,14 @@ const toDatetimeLocal = (date: Date) => {
    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T00:00`;
 };
 
+const generateId = () => Math.random().toString(36).slice(2, 6);
+
+const priorityColors: Record<Priority, string> = {
+   high: '#f07070',
+   medium: '#e0a060',
+   low: '#4caf7d',
+};
+
 export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
    const [updateTodo] = useUpdateTodoMutation();
    const [delTodo] = useDelTodoMutation();
@@ -25,17 +33,19 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
 
    const userId = loadFromLocalStorage<string>('user') ?? '';
 
-   // new task form
    const [showAdd, setShowAdd] = useState(false);
    const [newTitle, setNewTitle] = useState('');
    const [newDesc, setNewDesc] = useState('');
    const [newDeadline, setNewDeadline] = useState(toDatetimeLocal(date));
+   const [newPriority, setNewPriority] = useState<Priority>('medium');
 
-   // edit state
    const [editingId, setEditingId] = useState<string | null>(null);
    const [editTitle, setEditTitle] = useState('');
    const [editDesc, setEditDesc] = useState('');
    const [editDeadline, setEditDeadline] = useState('');
+   const [editPriority, setEditPriority] = useState<Priority>('medium');
+
+   const [newSubtasks, setNewSubtasks] = useState<string>('');
 
    const formatted = date.toLocaleDateString([], {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -60,12 +70,15 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
          completed: false,
          description: newDesc.trim(),
          deadline: newDeadline || undefined,
+         priority: newPriority,
+         subtasks: [],
       }).unwrap();
       addHistory({ userId, action: 'added', title: newTitle.trim(), timestamp: new Date().toISOString() });
       showToast('Task added');
       setNewTitle('');
       setNewDesc('');
       setNewDeadline(toDatetimeLocal(date));
+      setNewPriority('medium');
       setShowAdd(false);
    };
 
@@ -74,13 +87,36 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
       setEditTitle(todo.title);
       setEditDesc(todo.description ?? '');
       setEditDeadline(todo.deadline ?? '');
+      setEditPriority(todo.priority ?? 'medium');
    };
 
    const handleSave = (todo: Todo) => {
-      updateTodo({ ...todo, title: editTitle, description: editDesc, deadline: editDeadline || undefined }).unwrap();
+      updateTodo({ ...todo, title: editTitle, description: editDesc, deadline: editDeadline || undefined, priority: editPriority }).unwrap();
       addHistory({ userId, action: 'updated', title: editTitle, timestamp: new Date().toISOString() });
       showToast('Task updated');
       setEditingId(null);
+   };
+
+   // Subtask helpers
+   const saveSubtasks = (todo: Todo, updated: Subtask[]) => {
+      updateTodo({ ...todo, subtasks: updated });
+   };
+
+   const toggleSubtask = (todo: Todo, subId: string) => {
+      const updated = (todo.subtasks ?? []).map(s =>
+         s.id === subId ? { ...s, completed: !s.completed } : s
+      );
+      saveSubtasks(todo, updated);
+   };
+
+   const deleteSubtask = (todo: Todo, subId: string) => {
+      saveSubtasks(todo, (todo.subtasks ?? []).filter(s => s.id !== subId));
+   };
+
+   const addSubtask = (todo: Todo, title: string) => {
+      if (!title.trim()) return;
+      const updated = [...(todo.subtasks ?? []), { id: generateId(), title: title.trim(), completed: false }];
+      saveSubtasks(todo, updated);
    };
 
    return (
@@ -97,31 +133,32 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                   <p className={styles.empty}>No tasks this day</p>
                )}
                {todos.map(todo => (
-                  <li key={todo.id} className={`${styles.item} ${todo.completed ? styles.itemDone : ''}`}>
+                  <li
+                     key={todo.id}
+                     className={`${styles.item} ${todo.completed ? styles.itemDone : ''}`}
+                     style={{ borderLeft: `2px solid ${priorityColors[todo.priority ?? 'medium']}` }}
+                  >
                      {editingId === todo.id ? (
                         <div className={styles.editBlock}>
-                           <input
-                              className={styles.editInput}
-                              value={editTitle}
-                              onChange={e => setEditTitle(e.target.value)}
-                              placeholder="Title"
-                              autoFocus
-                           />
-                           <textarea
-                              className={styles.editTextarea}
-                              value={editDesc}
-                              onChange={e => setEditDesc(e.target.value)}
-                              placeholder="Description (optional)"
-                              rows={2}
-                           />
+                           <input className={styles.editInput} value={editTitle} onChange={e => setEditTitle(e.target.value)} placeholder="Title" autoFocus />
+                           <div className={styles.priorityRow}>
+                              {(['high', 'medium', 'low'] as Priority[]).map(p => (
+                                 <button
+                                    key={p}
+                                    className={styles.priorityBtn}
+                                    style={{
+                                       borderColor: editPriority === p ? priorityColors[p] : '#2a2a2e',
+                                       color: editPriority === p ? priorityColors[p] : '#666',
+                                       background: editPriority === p ? `${priorityColors[p]}18` : 'transparent',
+                                    }}
+                                    onClick={() => setEditPriority(p)}
+                                 >{p}</button>
+                              ))}
+                           </div>
+                           <textarea className={styles.editTextarea} value={editDesc} onChange={e => setEditDesc(e.target.value)} placeholder="Description (optional)" rows={2} />
                            <div className={styles.editDeadlineRow}>
                               <label className={styles.editLabel}>Deadline</label>
-                              <input
-                                 type="datetime-local"
-                                 className={styles.editDeadlineInput}
-                                 value={editDeadline}
-                                 onChange={e => setEditDeadline(e.target.value)}
-                              />
+                              <input type="datetime-local" className={styles.editDeadlineInput} value={editDeadline} onChange={e => setEditDeadline(e.target.value)} />
                            </div>
                            <div className={styles.editActions}>
                               <button className={styles.saveBtn} onClick={() => handleSave(todo)}>Save</button>
@@ -131,10 +168,7 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                      ) : (
                         <>
                            <div className={styles.itemLeft}>
-                              <button
-                                 className={`${styles.check} ${todo.completed ? styles.checkDone : ''}`}
-                                 onClick={() => toggleComplete(todo)}
-                              />
+                              <button className={`${styles.check} ${todo.completed ? styles.checkDone : ''}`} onClick={() => toggleComplete(todo)} />
                               <div className={styles.itemInfo}>
                                  <span className={styles.itemTitle}>{todo.title}</span>
                                  {todo.description && <span className={styles.itemDesc}>{todo.description}</span>}
@@ -143,6 +177,37 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
                                        {new Date(todo.deadline).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                  )}
+
+                                 {/* Subtasks */}
+                                 {(todo.subtasks ?? []).length > 0 && (
+                                    <div className={styles.subtasksBlock}>
+                                       <div className={styles.subtasksHeader}>
+                                          <span className={styles.subtasksProgress}>
+                                             {(todo.subtasks ?? []).filter(s => s.completed).length}/{(todo.subtasks ?? []).length} subtasks
+                                          </span>
+                                          <div className={styles.subtasksBar}>
+                                             <div className={styles.subtasksFill} style={{
+                                                width: `${((todo.subtasks ?? []).filter(s => s.completed).length / (todo.subtasks ?? []).length) * 100}%`
+                                             }} />
+                                          </div>
+                                       </div>
+                                       <ul className={styles.subtasksList}>
+                                          {(todo.subtasks ?? []).map(s => (
+                                             <li key={s.id} className={styles.subtaskItem}>
+                                                <button
+                                                   className={`${styles.subtaskCheck} ${s.completed ? styles.subtaskCheckDone : ''}`}
+                                                   onClick={() => toggleSubtask(todo, s.id)}
+                                                />
+                                                <span className={`${styles.subtaskLabel} ${s.completed ? styles.subtaskDone : ''}`}>{s.title}</span>
+                                                <button className={styles.subtaskDel} onClick={() => deleteSubtask(todo, s.id)}>✕</button>
+                                             </li>
+                                          ))}
+                                       </ul>
+                                    </div>
+                                 )}
+
+                                 {/* Add subtask */}
+                                 <SubtaskInput onAdd={(title) => addSubtask(todo, title)} />
                               </div>
                            </div>
                            <div className={styles.itemActions}>
@@ -157,28 +222,25 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
 
             {showAdd && (
                <div className={styles.addBlock}>
-                  <input
-                     className={styles.editInput}
-                     value={newTitle}
-                     onChange={e => setNewTitle(e.target.value)}
-                     placeholder="Task title"
-                     autoFocus
-                  />
-                  <textarea
-                     className={styles.editTextarea}
-                     value={newDesc}
-                     onChange={e => setNewDesc(e.target.value)}
-                     placeholder="Description (optional)"
-                     rows={2}
-                  />
+                  <input className={styles.editInput} value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Task title" autoFocus />
+                  <div className={styles.priorityRow}>
+                     {(['high', 'medium', 'low'] as Priority[]).map(p => (
+                        <button
+                           key={p}
+                           className={styles.priorityBtn}
+                           style={{
+                              borderColor: newPriority === p ? priorityColors[p] : '#2a2a2e',
+                              color: newPriority === p ? priorityColors[p] : '#666',
+                              background: newPriority === p ? `${priorityColors[p]}18` : 'transparent',
+                           }}
+                           onClick={() => setNewPriority(p)}
+                        >{p}</button>
+                     ))}
+                  </div>
+                  <textarea className={styles.editTextarea} value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Description (optional)" rows={2} />
                   <div className={styles.editDeadlineRow}>
                      <label className={styles.editLabel}>Deadline</label>
-                     <input
-                        type="datetime-local"
-                        className={styles.editDeadlineInput}
-                        value={newDeadline}
-                        onChange={e => setNewDeadline(e.target.value)}
-                     />
+                     <input type="datetime-local" className={styles.editDeadlineInput} value={newDeadline} onChange={e => setNewDeadline(e.target.value)} />
                   </div>
                   <div className={styles.editActions}>
                      <button className={styles.saveBtn} onClick={handleAdd}>Add task</button>
@@ -188,12 +250,27 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
             )}
 
             {!showAdd && (
-               <button className={styles.addBtn} onClick={() => setShowAdd(true)}>
-                  + Add task
-               </button>
+               <button className={styles.addBtn} onClick={() => setShowAdd(true)}>+ Add task</button>
             )}
-
          </div>
+      </div>
+   );
+};
+
+const SubtaskInput = ({ onAdd }: { onAdd: (title: string) => void }) => {
+   const [value, setValue] = useState('');
+   return (
+      <div className={styles.addSubtaskRow}>
+         <input
+            className={styles.addSubtaskInput}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && value.trim()) { onAdd(value); setValue(''); } }}
+            placeholder="+ Add subtask"
+         />
+         {value && (
+            <button className={styles.addSubtaskBtn} onClick={() => { onAdd(value); setValue(''); }}>Add</button>
+         )}
       </div>
    );
 };
