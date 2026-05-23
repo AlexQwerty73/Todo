@@ -13,6 +13,8 @@ interface TodoItemProps {
 export const TodoItem = ({ index, todo }: TodoItemProps) => {
    const [isEdit, setIsEdit] = useState(false);
    const [inputTitle, setInputTitle] = useState(todo.title);
+   const [inputDescription, setInputDescription] = useState(todo.description ?? '');
+   const [inputDeadline, setInputDeadline] = useState(todo.deadline ?? '');
    const [checkBox, setCheckBox] = useState(todo.completed);
    const [removing, setRemoving] = useState(false);
 
@@ -27,13 +29,9 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       && new Date(todo.deadline) < new Date();
 
    const formatDeadline = (deadline: string) => {
-      const date = new Date(deadline);
-      return date.toLocaleString([], {
-         day: '2-digit',
-         month: '2-digit',
-         year: 'numeric',
-         hour: '2-digit',
-         minute: '2-digit',
+      return new Date(deadline).toLocaleString([], {
+         day: '2-digit', month: '2-digit', year: 'numeric',
+         hour: '2-digit', minute: '2-digit',
       });
    };
 
@@ -41,10 +39,19 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
       addHistory({ userId, action, title, timestamp: new Date().toISOString() });
    };
 
-   const onChangeHandler = () => {
-      setIsEdit(!isEdit);
-      if (inputTitle !== todo.title) {
-         updateTodo({ ...todo, title: inputTitle }).unwrap();
+   const onSaveHandler = () => {
+      setIsEdit(false);
+      const changed = inputTitle !== todo.title
+         || inputDescription !== (todo.description ?? '')
+         || inputDeadline !== (todo.deadline ?? '');
+
+      if (changed) {
+         updateTodo({
+            ...todo,
+            title: inputTitle,
+            description: inputDescription,
+            deadline: inputDeadline || undefined,
+         }).unwrap();
          logHistory('updated', inputTitle);
          showToast('Task updated');
       }
@@ -72,25 +79,48 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
          <div className={styles.leftPart}>
             <span className={styles.todoIndex}>{index + 1}</span>
             <div className={styles.titleBlock}>
-               {!isEdit
-                  ? <p className={`${styles.todoTitle} ${checkBox ? styles.completed : ''}`}>
-                     {todo.title}
-                  </p>
-                  : <input
-                     type="text"
-                     value={inputTitle}
-                     onChange={(e) => setInputTitle(e.target.value)}
-                     className={styles.todoInput}
-                     autoFocus
-                  />
-               }
-               {todo.deadline && (
-                  <span className={`${styles.deadline} ${isOverdue ? styles.deadlineOverdue : ''}`}>
-                     ⏱ {formatDeadline(todo.deadline)}
-                  </span>
-               )}
-               {todo.description && (
-                  <span className={styles.description}>{todo.description}</span>
+               {!isEdit ? (
+                  <>
+                     <p className={`${styles.todoTitle} ${checkBox ? styles.completed : ''}`}>
+                        {todo.title}
+                     </p>
+                     {todo.deadline && (
+                        <span className={`${styles.deadline} ${isOverdue ? styles.deadlineOverdue : ''}`}>
+                           ⏱ {formatDeadline(todo.deadline)}
+                        </span>
+                     )}
+                     {todo.description && (
+                        <span className={styles.description}>{todo.description}</span>
+                     )}
+                  </>
+               ) : (
+                  <div className={styles.editBlock}>
+                     <input
+                        type="text"
+                        value={inputTitle}
+                        onChange={e => setInputTitle(e.target.value)}
+                        className={styles.todoInput}
+                        placeholder="Title"
+                        autoFocus
+                     />
+                     <textarea
+                        value={inputDescription}
+                        onChange={e => setInputDescription(e.target.value)}
+                        className={styles.editTextarea}
+                        placeholder="Description (optional)"
+                        rows={2}
+                     />
+                     <div className={styles.editDeadlineRow}>
+                        <label className={styles.editDeadlineLabel}>Deadline</label>
+                        <input
+                           type="datetime-local"
+                           value={inputDeadline}
+                           onChange={e => setInputDeadline(e.target.value)}
+                           className={styles.editDeadlineInput}
+                        />
+                     </div>
+                     <button onClick={onSaveHandler} className={styles.saveBtn}>Save</button>
+                  </div>
                )}
             </div>
          </div>
@@ -103,8 +133,13 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
                id={`checkbox-${todo.id}`}
             />
             <label className={styles.customCheckbox} htmlFor={`checkbox-${todo.id}`}></label>
-            <button onClick={onChangeHandler} className={styles.btn}>&#9998;</button>
-            <button onClick={onDelHandler} className={`${styles.btn} ${styles.delBtn}`}>&#9839;</button>
+            <button
+               onClick={() => setIsEdit(!isEdit)}
+               className={`${styles.btn} ${isEdit ? styles.btnActive : ''}`}
+            >
+               ✎
+            </button>
+            <button onClick={onDelHandler} className={`${styles.btn} ${styles.delBtn}`}>✕</button>
          </div>
       </li>
    );

@@ -1,6 +1,6 @@
 .todoItem {
    display: flex;
-   align-items: center;
+   align-items: flex-start;
    justify-content: space-between;
    padding: 10px 14px;
    border-radius: 6px;
@@ -15,53 +15,30 @@
    to { opacity: 1; transform: translateY(0); }
 }
 
-.removing {
-   opacity: 0;
-   transform: translateX(16px);
-}
+.removing { opacity: 0; transform: translateX(16px); }
 
-.overdue {
-   border-color: #5a2a2a;
-   background: #1e1414;
-}
-
+.overdue { border-color: #5a2a2a; background: #1e1414; }
 .todoItem:hover { border-color: #3a3a3e; }
 .overdue:hover { border-color: #7a3a3a; }
 
-.completed {
-   color: #555 !important;
-   text-decoration: line-through;
-}
+.completed { color: #555 !important; text-decoration: line-through; }
 
-.leftPart {
-   display: flex;
-   align-items: center;
-   gap: 12px;
-   flex: 1;
-}
+.leftPart { display: flex; align-items: flex-start; gap: 12px; flex: 1; }
 
-.titleBlock {
-   display: flex;
-   flex-direction: column;
-   gap: 3px;
-   flex: 1;
-}
+.titleBlock { display: flex; flex-direction: column; gap: 3px; flex: 1; }
 
-.todoIndex { font-size: 12px; color: #555; min-width: 16px; }
+.todoIndex { font-size: 12px; color: #555; min-width: 16px; margin-top: 2px; }
 .todoTitle { font-size: 14px; color: #d0d0d0; transition: color 0.15s; }
 
-.deadline {
-   font-size: 11px;
-   color: #666;
-}
+.deadline { font-size: 11px; color: #666; }
+.deadlineOverdue { color: #f07070; }
+.description { font-size: 12px; color: #555; }
 
-.deadlineOverdue {
-   color: #f07070;
-}
-
-.description {
-   font-size: 12px;
-   color: #555;
+.editBlock {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   width: 100%;
 }
 
 .todoInput {
@@ -72,10 +49,62 @@
    font-size: 14px;
    color: #e0e0e0;
    outline: none;
-   width: 260px;
+   width: 100%;
 }
 
-.todoButtons { display: flex; align-items: center; gap: 6px; }
+.editTextarea {
+   background: #0e0e10;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 5px;
+   padding: 7px 10px;
+   font-size: 13px;
+   color: #e0e0e0;
+   outline: none;
+   resize: none;
+   font-family: inherit;
+   transition: border-color 0.15s;
+}
+
+.editTextarea:focus { border-color: #7c5cfc; }
+.editTextarea::placeholder { color: #444; }
+
+.editDeadlineRow {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.editDeadlineLabel { font-size: 12px; color: #888; white-space: nowrap; }
+
+.editDeadlineInput {
+   background: #0e0e10;
+   border: 0.5px solid #2a2a2e;
+   border-radius: 5px;
+   padding: 5px 8px;
+   color: #e0e0e0;
+   font-size: 12px;
+   outline: none;
+   transition: border-color 0.15s;
+   colorscheme: dark;
+}
+
+.editDeadlineInput:focus { border-color: #7c5cfc; }
+
+.saveBtn {
+   align-self: flex-start;
+   background: #7c5cfc;
+   color: #fff;
+   border: none;
+   border-radius: 5px;
+   padding: 5px 14px;
+   font-size: 13px;
+   cursor: pointer;
+   transition: background 0.15s;
+}
+
+.saveBtn:hover { background: #6a4ae0; }
+
+.todoButtons { display: flex; align-items: flex-start; gap: 6px; padding-top: 1px; }
 .todoCheckbox { display: none; }
 
 .customCheckbox {
@@ -86,12 +115,10 @@
    cursor: pointer;
    transition: background 0.15s, border-color 0.15s;
    display: block;
+   flex-shrink: 0;
 }
 
-.todoCheckbox:checked + .customCheckbox {
-   background: #7c5cfc;
-   border-color: #7c5cfc;
-}
+.todoCheckbox:checked + .customCheckbox { background: #7c5cfc; border-color: #7c5cfc; }
 
 .btn {
    width: 28px;
@@ -106,12 +133,10 @@
    font-size: 13px;
    cursor: pointer;
    transition: background 0.15s, color 0.15s;
+   flex-shrink: 0;
 }
 
 .btn:hover { background: #2a2a2e; color: #e0e0e0; }
+.btnActive { border-color: #7c5cfc; color: #7c5cfc; }
 
-.delBtn:hover {
-   background: #2d1a1a;
-   border-color: #5a2a2a;
-   color: #f07070;
-}
+.delBtn:hover { background: #2d1a1a; border-color: #5a2a2a; color: #f07070; }
