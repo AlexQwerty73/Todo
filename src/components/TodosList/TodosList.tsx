@@ -46,7 +46,15 @@ export const TodosList = ({ todos }: TodosListProps) => {
                ? filtered.map((todo, index) =>
                   <TodoItem key={todo.id} index={index} todo={todo} />
                )
-               : <p className={styles.empty}>No tasks here</p>
+               : (
+                  <div className={styles.empty}>
+                     <span className={styles.emptyIcon}>○</span>
+                     <p>No tasks here</p>
+                     <p className={styles.emptyHint}>
+                        {filter === 'all' ? 'Add your first task above' : `No ${filter} tasks`}
+                     </p>
+                  </div>
+               )
             }
          </ul>
       </div>
