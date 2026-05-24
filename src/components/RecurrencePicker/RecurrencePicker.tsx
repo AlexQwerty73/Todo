@@ -22,22 +22,23 @@ const UNITS: { value: IntervalUnit; label: string }[] = [
 ];
 
 export const RecurrencePicker = ({ value, onChange }: Props) => {
-   const activeType = value?.type ?? 'none';
-   const isCustomInterval = value?.type === 'custom' && !value.weekDays?.length;
+   const activeType      = value?.type ?? 'none';
    const isCustomWeekdays = value?.type === 'custom' && !!value.weekDays?.length;
 
    const setType = (t: RecurrenceType | 'none') => {
       if (t === 'none') { onChange(undefined); return; }
+      const endDate = value?.endDate;
       if (t === 'custom') {
-         onChange({ type: 'custom', interval: 1, intervalUnit: 'days' });
+         onChange({ type: 'custom', interval: 1, intervalUnit: 'days', endDate });
       } else {
-         onChange({ type: t });
+         onChange({ type: t, endDate });
       }
    };
 
    const setCustomMode = (mode: 'interval' | 'weekdays') => {
-      if (mode === 'interval') onChange({ type: 'custom', interval: 1, intervalUnit: 'days' });
-      else onChange({ type: 'custom', weekDays: [] });
+      const endDate = value?.endDate;
+      if (mode === 'interval') onChange({ type: 'custom', interval: 1, intervalUnit: 'days', endDate });
+      else onChange({ type: 'custom', weekDays: [], endDate });
    };
 
    const setInterval = (n: number) =>
@@ -49,12 +50,21 @@ export const RecurrencePicker = ({ value, onChange }: Props) => {
    const toggleWeekDay = (d: number) => {
       const current = value?.weekDays ?? [];
       const next = current.includes(d) ? current.filter(x => x !== d) : [...current, d].sort();
-      onChange({ type: 'custom', weekDays: next });
+      onChange({ ...value!, type: 'custom', weekDays: next });
    };
+
+   const setEndDate = (dateStr: string) => {
+      if (!value) return;
+      onChange({ ...value, endDate: dateStr || undefined });
+   };
+
+   // Today's date in yyyy-mm-dd for min attribute
+   const todayStr = new Date().toISOString().split('T')[0];
 
    return (
       <div className={styles.wrapper}>
-         {/* Тип повторения */}
+
+         {/* Repeat type */}
          <div className={styles.typeRow}>
             {TYPES.map(t => (
                <button
@@ -68,7 +78,7 @@ export const RecurrencePicker = ({ value, onChange }: Props) => {
             ))}
          </div>
 
-         {/* Custom: переключатель режима */}
+         {/* Custom mode — interval or specific weekdays */}
          {value?.type === 'custom' && (
             <div className={styles.customBlock}>
                <div className={styles.modeRow}>
@@ -88,7 +98,6 @@ export const RecurrencePicker = ({ value, onChange }: Props) => {
                   </button>
                </div>
 
-               {/* Каждые N единиц */}
                {!isCustomWeekdays && (
                   <div className={styles.intervalRow}>
                      <span className={styles.intervalLabel}>Every</span>
@@ -114,7 +123,6 @@ export const RecurrencePicker = ({ value, onChange }: Props) => {
                   </div>
                )}
 
-               {/* Конкретные дни недели */}
                {isCustomWeekdays && (
                   <div className={styles.weekdaysRow}>
                      {WEEKDAYS.map((label, i) => (
@@ -131,6 +139,32 @@ export const RecurrencePicker = ({ value, onChange }: Props) => {
                )}
             </div>
          )}
+
+         {/* End date — visible whenever recurrence is active */}
+         {value && (
+            <div className={styles.endDateRow}>
+               <span className={styles.endDateLabel}>Until</span>
+               <input
+                  type="date"
+                  min={todayStr}
+                  className={styles.endDateInput}
+                  value={value.endDate ? value.endDate.split('T')[0] : ''}
+                  onChange={e => setEndDate(e.target.value)}
+               />
+               {value.endDate && (
+                  <button
+                     type="button"
+                     className={styles.clearEndDate}
+                     onClick={() => setEndDate('')}
+                     title="Remove end date"
+                  >✕</button>
+               )}
+               {!value.endDate && (
+                  <span className={styles.endDateHint}>optional</span>
+               )}
+            </div>
+         )}
+
       </div>
    );
 };

@@ -234,3 +234,16 @@
 }
 
 .cancelBtn:hover { background: #1a1a1e; color: #aaa; border-color: #3a3a3e; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+   .page { gap: 16px; }
+   .title { font-size: 22px; }
+   .row, .dangerRow {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+   }
+   .priorityBtns, .sizeBtns { flex-wrap: wrap; }
+   .confirmRow { flex-wrap: wrap; }
+}

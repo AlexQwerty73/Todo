@@ -3,7 +3,7 @@ import styles from './DayModal.module.css';
 import { Todo, Subtask, Priority, Recurrence } from '../../redux/todosApi';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddTodoMutation, useAddHistoryMutation } from '../../redux';
 import { useToast } from '../../context/ToastContext';
-import { loadFromLocalStorage, getRecurrenceLabel, loadSettings } from '../../utils';
+import { loadFromLocalStorage, getRecurrenceLabel, getNextRecurrenceDate, loadSettings } from '../../utils';
 import { RecurrencePicker } from '../../components/RecurrencePicker';
 import { TagPicker, getTagColor } from '../../components/TagPicker';
 
@@ -63,8 +63,29 @@ export const DayModal = ({ date, todos, onClose }: DayModalProps) => {
    });
 
    const toggleComplete = (todo: Todo) => {
-      updateTodo({ ...todo, completed: !todo.completed }).unwrap();
-      showToast(!todo.completed ? 'Task completed! ✓' : 'Task reopened');
+      // Recurring task: advance deadline instead of marking done
+      if (!todo.completed && todo.recurrence && todo.deadline) {
+         const nextDate = getNextRecurrenceDate(todo.deadline, todo.recurrence);
+         addHistory({ userId, action: 'completed', title: todo.title, timestamp: new Date().toISOString() });
+
+         if (nextDate) {
+            updateTodo({ ...todo, deadline: nextDate }).unwrap();
+            const label = new Date(nextDate).toLocaleDateString([], {
+               weekday: 'short', day: 'numeric', month: 'short',
+            });
+            showToast(`✓ Done · next ${label}`);
+         } else {
+            updateTodo({ ...todo, completed: true, recurrence: undefined }).unwrap();
+            showToast('Last recurrence completed! 🎉');
+         }
+         return;
+      }
+
+      // Normal task
+      const nextCompleted = !todo.completed;
+      updateTodo({ ...todo, completed: nextCompleted }).unwrap();
+      addHistory({ userId, action: nextCompleted ? 'completed' : 'reopened', title: todo.title, timestamp: new Date().toISOString() });
+      showToast(nextCompleted ? 'Task completed! ✓' : 'Task reopened');
    };
 
    const handleDelete = (todo: Todo) => {

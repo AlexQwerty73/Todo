@@ -3,7 +3,7 @@ import styles from './todo.module.css';
 import { useDelTodoMutation, useUpdateTodoMutation, useAddHistoryMutation } from '../../redux';
 import { Todo, Priority, Subtask, Recurrence } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
-import { loadFromLocalStorage, getRecurrenceLabel } from '../../utils';
+import { loadFromLocalStorage, getRecurrenceLabel, getNextRecurrenceDate } from '../../utils';
 import { RecurrencePicker } from '../RecurrencePicker';
 import { TagPicker, getTagColor } from '../TagPicker';
 
@@ -141,6 +141,27 @@ export const TodoItem = ({ index, todo }: TodoItemProps) => {
    };
 
    const checkBoxHandler = () => {
+      // ── Recurring task: advance to next occurrence ──────────────────────────
+      if (!checkBox && todo.recurrence && todo.deadline) {
+         logHistory('completed', todo.title);
+         const nextDate = getNextRecurrenceDate(todo.deadline, todo.recurrence);
+
+         if (nextDate) {
+            // Advance deadline — do NOT mark completed
+            updateTodo({ ...todo, deadline: nextDate }).unwrap();
+            const label = new Date(nextDate).toLocaleDateString([], {
+               weekday: 'short', day: 'numeric', month: 'short',
+            });
+            showToast(`✓ Done · next ${label}`);
+         } else {
+            // End date reached — finish the recurrence permanently
+            updateTodo({ ...todo, completed: true, recurrence: undefined }).unwrap();
+            showToast('Last recurrence completed! 🎉');
+         }
+         return;
+      }
+
+      // ── Normal task ─────────────────────────────────────────────────────────
       const newCompleted = !checkBox;
       setCheckBox(newCompleted);
       updateTodo({ ...todo, completed: newCompleted }).unwrap();

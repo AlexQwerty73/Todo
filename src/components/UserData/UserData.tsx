@@ -62,7 +62,6 @@ export const UserData = () => {
 
    const user = !Array.isArray(data) ? data as User : null;
 
-   const [showPassword, setShowPassword] = useState(false);
    const [exportingPng, setExportingPng] = useState(false);
 
    const printRef = useRef<HTMLDivElement>(null);
@@ -224,14 +223,12 @@ export const UserData = () => {
                   <div className={styles.field}>
                      <span className={styles.fieldLabel}>Password</span>
                      <div className={styles.passwordRow}>
-                        <span className={styles.fieldValue}>
-                           {showPassword ? (user?.password ?? '—') : '••••••••'}
-                        </span>
+                        <span className={styles.fieldValue}>••••••••</span>
                         <button
                            className={styles.showPassBtn}
-                           onClick={() => setShowPassword(p => !p)}
+                           onClick={() => navigate('edit')}
                         >
-                           {showPassword ? 'Hide' : 'Show'}
+                           Change
                         </button>
                      </div>
                   </div>
@@ -355,30 +352,44 @@ export const UserData = () => {
             {/* ══ Статистика ══ */}
             <div className={styles.statsCard}>
                <p className={styles.cardTitle}>Tasks overview</p>
-               <div className={styles.statsGrid}>
-                  <div className={styles.statItem}>
-                     <span className={styles.statNum}>{totalTasks}</span>
-                     <span className={styles.statLabel}>Total</span>
+               {totalTasks === 0 && (
+                  <div className={styles.emptyStats}>
+                     <span className={styles.emptyStatsIcon}>○</span>
+                     <p className={styles.emptyStatsText}>No tasks yet</p>
+                     <button
+                        className={styles.emptyStatsBtn}
+                        onClick={() => navigate(`/user/${id}/todos`)}
+                     >Add your first task →</button>
                   </div>
-                  <div className={`${styles.statItem} ${styles.statDone}`}>
-                     <span className={styles.statNum}>{completedTasks}</span>
-                     <span className={styles.statLabel}>Done</span>
-                  </div>
-                  <div className={`${styles.statItem} ${styles.statActive}`}>
-                     <span className={styles.statNum}>{activeTasks}</span>
-                     <span className={styles.statLabel}>Active</span>
-                  </div>
-                  <div className={`${styles.statItem} ${overdueTasks > 0 ? styles.statOverdue : ''}`}>
-                     <span className={styles.statNum}>{overdueTasks}</span>
-                     <span className={styles.statLabel}>Overdue</span>
-                  </div>
-               </div>
-               <div className={styles.progressRow}>
-                  <div className={styles.progressTrack}>
-                     <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
-                  </div>
-                  <span className={styles.progressLabel}>{progressPct}% complete</span>
-               </div>
+               )}
+               {totalTasks > 0 && (
+                  <>
+                     <div className={styles.statsGrid}>
+                        <div className={styles.statItem}>
+                           <span className={styles.statNum}>{totalTasks}</span>
+                           <span className={styles.statLabel}>Total</span>
+                        </div>
+                        <div className={`${styles.statItem} ${styles.statDone}`}>
+                           <span className={styles.statNum}>{completedTasks}</span>
+                           <span className={styles.statLabel}>Done</span>
+                        </div>
+                        <div className={`${styles.statItem} ${styles.statActive}`}>
+                           <span className={styles.statNum}>{activeTasks}</span>
+                           <span className={styles.statLabel}>Active</span>
+                        </div>
+                        <div className={`${styles.statItem} ${overdueTasks > 0 ? styles.statOverdue : ''}`}>
+                           <span className={styles.statNum}>{overdueTasks}</span>
+                           <span className={styles.statLabel}>Overdue</span>
+                        </div>
+                     </div>
+                     <div className={styles.progressRow}>
+                        <div className={styles.progressTrack}>
+                           <div className={styles.progressFill} style={{ width: `${progressPct}%` }} />
+                        </div>
+                        <span className={styles.progressLabel}>{progressPct}% complete</span>
+                     </div>
+                  </>
+               )}
             </div>
 
             {/* ══ Priority breakdown ══ */}

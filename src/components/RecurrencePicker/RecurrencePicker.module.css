@@ -141,3 +141,56 @@
    background: rgba(124, 92, 252, 0.15);
    font-weight: 600;
 }
+
+/* ── End date ── */
+.endDateRow {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   padding: 6px 10px;
+   background: #0e0e10;
+   border: 0.5px solid #1e1e22;
+   border-radius: 6px;
+}
+
+.endDateLabel {
+   font-size: 12px;
+   color: #555;
+   white-space: nowrap;
+   min-width: 28px;
+}
+
+.endDateInput {
+   flex: 1;
+   background: transparent;
+   border: none;
+   border-bottom: 0.5px solid #2a2a2e;
+   color: #e0e0e0;
+   font-size: 12px;
+   outline: none;
+   color-scheme: dark;
+   padding: 2px 0;
+   transition: border-color 0.15s;
+}
+
+.endDateInput:focus { border-bottom-color: #7c5cfc; }
+
+.endDateHint {
+   font-size: 11px;
+   color: #333;
+   white-space: nowrap;
+}
+
+.clearEndDate {
+   background: transparent;
+   border: none;
+   color: #444;
+   font-size: 11px;
+   cursor: pointer;
+   padding: 2px 4px;
+   border-radius: 3px;
+   transition: color 0.15s;
+   line-height: 1;
+}
+
+.clearEndDate:hover { color: #f07070; }

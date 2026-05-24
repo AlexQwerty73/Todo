@@ -13,6 +13,31 @@
   min-width: 0;
 }
 
+/* ── Medium screens: icon-only sidebar ── */
+@media (max-width: 900px) {
+  .sideBar { width: 56px; }
+  .outLet  { padding: 24px 20px; }
+}
+
+/* ── Small screens: bottom tab bar ── */
+@media (max-width: 600px) {
+  .sideBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    min-height: unset;
+    height: 56px;
+    border-right: none;
+    border-top: 0.5px solid #1e1e22;
+    z-index: 100;
+    background: #111114;
+  }
+  .outLet { padding: 16px 16px 72px; }
+}
+
 /* Для страниц без сайдбара (login / create) */
 .authOutlet {
   position: fixed;

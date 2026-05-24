@@ -17,6 +17,7 @@ import {
 } from '../../utils';
 import { Priority } from '../../redux/todosApi';
 import { useToast } from '../../context/ToastContext';
+import { SETTINGS_CHANGED } from '../../context/SettingsContext';
 import styles from './SettingsPage.module.css';
 
 const priorityColors: Record<Priority, string> = {
@@ -43,6 +44,7 @@ export const SettingsPage = () => {
 
    const [defaultPriority, setDefaultPriority] = useState<Priority>(initial.defaultPriority);
    const [historyPageSize, setHistoryPageSize]  = useState<number>(initial.historyPageSize);
+   const [todosPageSize,   setTodosPageSize]    = useState<number>(initial.todosPageSize);
    const [confirmDelete,   setConfirmDelete]     = useState(false);
    const [confirmClear,    setConfirmClear]      = useState(false);
 
@@ -54,8 +56,9 @@ export const SettingsPage = () => {
    const [delTodo]       = useDelTodoMutation();
 
    const handleSave = () => {
-      const updated: UserSettings = { defaultPriority, historyPageSize };
+      const updated: UserSettings = { defaultPriority, historyPageSize, todosPageSize };
       saveToLocalStorage(key, updated);
+      window.dispatchEvent(new Event(SETTINGS_CHANGED));
       showToast('Settings saved ✓');
    };
 
@@ -113,6 +116,31 @@ export const SettingsPage = () => {
                         >
                            <span>{priorityIcons[p]}</span> {p}
                         </button>
+                     ))}
+                  </div>
+               </div>
+            </div>
+         </section>
+
+         {/* ── Tasks display ── */}
+         <section className={styles.section}>
+            <div className={styles.sectionHeader}>
+               <h2 className={styles.sectionTitle}>Tasks list</h2>
+               <p className={styles.sectionDesc}>Control how your task list is displayed.</p>
+            </div>
+            <div className={styles.card}>
+               <div className={styles.row}>
+                  <div className={styles.rowLabel}>
+                     <span className={styles.rowTitle}>Items per page</span>
+                     <span className={styles.rowHint}>How many tasks to show at once</span>
+                  </div>
+                  <div className={styles.sizeBtns}>
+                     {[5, 7, 10, 15, 20].map(n => (
+                        <button
+                           key={n}
+                           className={`${styles.sizeBtn} ${todosPageSize === n ? styles.sizeBtnActive : ''}`}
+                           onClick={() => setTodosPageSize(n)}
+                        >{n}</button>
                      ))}
                   </div>
                </div>

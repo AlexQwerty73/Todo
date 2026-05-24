@@ -29,12 +29,13 @@ export const Menu = () => {
                      <NavLink
                         to={item.path(id ?? '')}
                         end={item.end}
+                        title={item.label}
                         className={({ isActive }) =>
                            `${styles.item} ${isActive ? styles.active : ''}`
                         }
                      >
                         <span className={styles.icon}>{item.icon}</span>
-                        {item.label}
+                        <span className={styles.label}>{item.label}</span>
                      </NavLink>
                   </li>
                ))}
@@ -48,9 +49,10 @@ export const Menu = () => {
                to="/login/"
                onClick={() => removeKeyFromLocalStorage('user')}
                className={styles.logout}
+               title="Log out"
             >
                <span className={styles.icon}>↪</span>
-               Log out
+               <span className={styles.label}>Log out</span>
             </NavLink>
          </div>
 

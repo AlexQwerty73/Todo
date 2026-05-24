@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Menu } from './components/Menu/Menu';
 import styles from './styles.module.css';
 import { loadFromLocalStorage } from '../../utils';
+import { SettingsProvider } from '../../context/SettingsContext';
 
 export const Layout = () => {
    const location = useLocation();
@@ -18,7 +19,7 @@ export const Layout = () => {
    }, [navigate, location.pathname]);
 
    return (
-      <>
+      <SettingsProvider userId={id ?? ''}>
          {showLayout && (
             <div className={styles.sideBar}>
                <Menu />
@@ -28,6 +29,6 @@ export const Layout = () => {
          <div className={showLayout ? styles.outLet : styles.authOutlet}>
             <Outlet />
          </div>
-      </>
+      </SettingsProvider>
    );
 };

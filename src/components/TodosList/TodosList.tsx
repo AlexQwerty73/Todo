@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import {
    DndContext, closestCenter, PointerSensor, useSensor, useSensors,
    DragEndEvent,
@@ -12,6 +12,8 @@ import { TodoItem } from '../TodoItem';
 import { Todo } from '../../redux/todosApi';
 import { useUpdateTodoMutation, useDelTodoMutation, useAddHistoryMutation } from '../../redux';
 import { loadFromLocalStorage } from '../../utils';
+import { useAppSettings } from '../../context/SettingsContext';
+import { useToast } from '../../context/ToastContext';
 import { getTagColor } from '../TagPicker';
 import styles from './todoList.module.css';
 
@@ -20,8 +22,6 @@ type Filter   = 'all' | 'active' | 'completed';
 type SortKey  = 'custom' | 'priority' | 'deadline' | 'title' | 'created';
 
 interface TodosListProps { todos?: Todo[] }
-
-const PAGE_SIZE = 7;
 
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 } as const;
 
@@ -72,10 +72,16 @@ export const TodosList = ({ todos }: TodosListProps) => {
    const [activeTag, setActiveTag] = useState<string | null>(null);
    const [page, setPage]         = useState(1);
 
+   const userId   = loadFromLocalStorage<string>('user') ?? '';
+   const pageSize = useAppSettings().todosPageSize;
+
+   // Reset to first page when page size changes
+   useEffect(() => { setPage(1); }, [pageSize]);
+
    const [updateTodo] = useUpdateTodoMutation();
    const [delTodo]    = useDelTodoMutation();
    const [addHistory] = useAddHistoryMutation();
-   const userId = loadFromLocalStorage<string>('user') ?? '';
+   const { showToast } = useToast();
 
    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -94,21 +100,6 @@ export const TodosList = ({ todos }: TodosListProps) => {
       });
    }, [updateTodo]);
 
-   const handleCompleteAll = () => {
-      filtered.filter(t => !t.completed).forEach(t =>
-         updateTodo({ ...t, completed: true })
-      );
-   };
-
-   const handleClearCompleted = () => {
-      const ts = new Date().toISOString();
-      filtered.filter(t => t.completed).forEach(t => {
-         delTodo(t.id);
-         addHistory({ userId, action: 'deleted', title: t.title, timestamp: ts });
-      });
-      setPage(1);
-   };
-
    // ── скелетон — после всех хуков ──
    if (!todos) return <Skeleton />;
 
@@ -124,9 +115,27 @@ export const TodosList = ({ todos }: TodosListProps) => {
       if (activeTag && !(todo.tags ?? []).includes(activeTag)) return false;
       if (q && !todo.title.toLowerCase().includes(q)
             && !(todo.description ?? '').toLowerCase().includes(q)
-            && !(todo.tags ?? []).join(' ').toLowerCase().includes(q)) return false;
+            && !(todo.tags ?? []).join(' ').toLowerCase().includes(q)
+            && !(todo.subtasks ?? []).some(s => s.title.toLowerCase().includes(q))) return false;
       return true;
    });
+
+   const handleCompleteAll = () => {
+      const active = filtered.filter(t => !t.completed);
+      active.forEach(t => updateTodo({ ...t, completed: true }));
+      if (active.length) showToast(`✓ ${active.length} task${active.length !== 1 ? 's' : ''} completed`);
+   };
+
+   const handleClearCompleted = () => {
+      const done = filtered.filter(t => t.completed);
+      const ts   = new Date().toISOString();
+      done.forEach(t => {
+         delTodo(t.id);
+         addHistory({ userId, action: 'deleted', title: t.title, timestamp: ts });
+      });
+      setPage(1);
+      if (done.length) showToast(`Removed ${done.length} completed task${done.length !== 1 ? 's' : ''}`, 'error');
+   };
 
    const sorted = [...filtered].sort((a, b) => {
       let cmp = 0;
@@ -156,8 +165,8 @@ export const TodosList = ({ todos }: TodosListProps) => {
    // обновляем ref каждый рендер — до рендера JSX
    sortedRef.current = sorted;
 
-   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
-   const paginated  = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+   const totalPages = Math.ceil(sorted.length / pageSize);
+   const paginated  = sorted.slice((page - 1) * pageSize, page * pageSize);
    const completedCount = todos.filter(t => t.completed).length;
    const isDragMode = sortKey === 'custom' && !q && !activeTag;
 
@@ -265,7 +274,7 @@ export const TodosList = ({ todos }: TodosListProps) => {
                            <SortableTodoItem
                               key={todo.id}
                               todo={todo}
-                              index={(page - 1) * PAGE_SIZE + i}
+                              index={(page - 1) * pageSize + i}
                               isDragMode={isDragMode}
                            />
                         ))
@@ -278,7 +287,7 @@ export const TodosList = ({ todos }: TodosListProps) => {
             <ul className={styles.list}>
                {paginated.length > 0
                   ? paginated.map((todo, i) => (
-                     <TodoItem key={todo.id} index={(page - 1) * PAGE_SIZE + i} todo={todo} />
+                     <TodoItem key={todo.id} index={(page - 1) * pageSize + i} todo={todo} />
                   ))
                   : <EmptyState filter={filter} search={q} />
                }

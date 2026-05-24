@@ -298,3 +298,13 @@
    color: #333;
    padding: 0 4px;
 }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+   .header { flex-wrap: wrap; gap: 6px; }
+   .bulkActions { margin-left: 0; margin-right: auto; order: 3; }
+   .filters { order: 2; }
+   .counter { order: 1; width: 100%; }
+   .sortRow { gap: 3px; }
+   .sortBtn { padding: 4px 7px; font-size: 10px; }
+}

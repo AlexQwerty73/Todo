@@ -1,70 +1,102 @@
-# Getting Started with Create React App
+# Tasks — a full-featured todo app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A dark-themed task management app built with React, TypeScript, and Redux Toolkit.  
+Uses `json-server` as a local REST backend so all data persists across sessions.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Tech stack
 
-### `npm start`
+| Layer | Library |
+|---|---|
+| UI | React 18, TypeScript |
+| State / API | Redux Toolkit, RTK Query |
+| Routing | React Router v6 |
+| Drag & drop | @dnd-kit |
+| Backend | json-server (local REST) |
+| Export | html2canvas (PNG) |
+| Styling | CSS Modules, dark theme |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting started
 
-### `npm test`
+```bash
+# 1. Install dependencies
+npm install
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 2. Start both the React app and json-server together
+npm run dev
+```
 
-### `npm run build`
+App → http://localhost:3000  
+API → http://localhost:3001
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Or start them separately:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm run server   # json-server on :3001
+npm start        # React on :3000
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Features
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Tasks
+- Add tasks with title, description, priority (high / medium / low), deadline, tags, recurrence
+- Inline edit — all fields editable without leaving the list
+- Drag-and-drop reorder (custom sort)
+- Sort by priority, deadline, title, creation date, or custom order
+- Filter by status (all / active / completed) and by tag
+- Full-text search across title, description, tags, and subtasks
+- Bulk actions — complete all, clear done
+- Configurable items per page
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Subtasks
+- Add / edit / delete subtasks inline
+- Progress bar showing completed / total
+- Subtask input fades in on card hover
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Recurring tasks
+- Daily, weekly, monthly, or custom interval / specific weekdays
+- Optional end date — recurrence stops automatically
+- Completing a recurring task advances the deadline to the next occurrence instead of marking it done permanently
+- When the end date is reached the task is permanently completed
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Calendar view
+- Month grid with task chips per day
+- Click any day to open a modal — add, edit, complete, delete tasks for that day
+- Today highlighted, completed tasks shown with strikethrough
 
-## Learn More
+### History
+- Full activity log: added, completed, reopened, updated, deleted
+- Grouped by day (Today / Yesterday / full date)
+- Filter by action type, stat chips, pagination
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Profile
+- User stats: total, done, active, overdue tasks
+- Priority breakdown and tag usage charts
+- Upcoming deadlines panel
+- Recent activity feed
+- Export todos as JSON or PNG
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Settings
+- Default priority for new tasks
+- Tasks per page (5 / 7 / 10 / 15 / 20)
+- History items per page (5 / 10 / 20 / 50)
+- Clear all history
+- Delete account (removes all data)
+- Settings take effect immediately — no page reload needed
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Scripts
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Command | Description |
+|---|---|
+| `npm run dev` | Start app + API server together |
+| `npm start` | React dev server only |
+| `npm run server` | json-server only |
+| `npm run build` | Production build |
+| `npm test` | Run tests |

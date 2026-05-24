@@ -28,30 +28,34 @@ export const AddTodoForm = () => {
    const [addHistory] = useAddHistoryMutation();
    const { showToast } = useToast();
 
-   const handleAdd = () => {
+   const handleAdd = async () => {
       if (!userId || !title.trim()) return;
+      try {
+         await addTodo({
+            userId,
+            title:       title.trim(),
+            completed:   false,
+            description: description.trim(),
+            deadline:    deadline || undefined,
+            priority,
+            recurrence,
+            tags,
+            order:       Date.now(),
+            createdAt:   new Date().toISOString(),
+         }).unwrap();
 
-      addTodo({
-         userId,
-         title:       title.trim(),
-         completed:   false,
-         description: description.trim(),
-         deadline:    deadline || undefined,
-         priority,
-         recurrence,
-         tags,
-         order:       Date.now(),
-         createdAt:   new Date().toISOString(),
-      }).unwrap();
+         addHistory({
+            userId,
+            action:    'added',
+            title:     title.trim(),
+            timestamp: new Date().toISOString(),
+         });
 
-      addHistory({
-         userId,
-         action:    'added',
-         title:     title.trim(),
-         timestamp: new Date().toISOString(),
-      });
-
-      showToast('Task added ✓');
+         showToast('Task added ✓');
+      } catch {
+         showToast('Failed to add task', 'error');
+         return;
+      }
       setTitle('');
       setDescription('');
       setDeadline('');

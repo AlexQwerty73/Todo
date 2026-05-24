@@ -4,11 +4,13 @@ import { loadFromLocalStorage } from './loadFromLocalStorage';
 export interface UserSettings {
    defaultPriority: Priority;
    historyPageSize: number;
+   todosPageSize: number;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
    defaultPriority: 'medium',
-   historyPageSize: 12,
+   historyPageSize: 10,
+   todosPageSize: 7,
 };
 
 export const getSettingsKey = (userId: string) => `settings:${userId}`;

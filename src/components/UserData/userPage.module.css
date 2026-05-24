@@ -292,6 +292,40 @@
    letter-spacing: 0.06em;
 }
 
+/* ── Empty stats ── */
+.emptyStats {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 8px;
+   padding: 16px 0 4px;
+}
+
+.emptyStatsIcon {
+   font-size: 28px;
+   color: #222;
+}
+
+.emptyStatsText {
+   font-size: 13px;
+   color: #444;
+}
+
+.emptyStatsBtn {
+   background: transparent;
+   border: 0.5px solid rgba(124, 92, 252, 0.3);
+   border-radius: 6px;
+   color: #7c5cfc;
+   font-size: 12px;
+   padding: 6px 14px;
+   cursor: pointer;
+   transition: background 0.15s;
+   font-family: inherit;
+   margin-top: 4px;
+}
+
+.emptyStatsBtn:hover { background: rgba(124, 92, 252, 0.1); }
+
 /* Прогресс */
 .progressRow {
    display: flex;
@@ -761,4 +795,41 @@
    color: #333;
    text-align: center;
    padding: 6px 0;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+   .page {
+      grid-template-columns: 1fr;
+   }
+   .colRight {
+      /* move right column below left on medium screens */
+      order: 2;
+   }
+   .statsGrid {
+      grid-template-columns: repeat(2, 1fr);
+   }
+}
+
+@media (max-width: 600px) {
+   .profileCard { padding: 16px; }
+   .statsCard,
+   .activityCard,
+   .exportCard,
+   .settingsCard,
+   .priorityCard,
+   .tagsCard,
+   .deadlinesCard { padding: 14px 16px; }
+
+   .profileTop { flex-wrap: wrap; gap: 12px; }
+   .avatar { width: 48px; height: 48px; font-size: 15px; }
+   .profileName { font-size: 16px; }
+
+   .statsGrid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+   .statNum { font-size: 18px; }
+
+   .exportBtns { flex-wrap: wrap; }
+   .exportBtn { min-width: calc(50% - 4px); }
 }

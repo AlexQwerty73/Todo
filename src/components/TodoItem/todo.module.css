@@ -9,7 +9,8 @@
    border: 0.5px solid #2a2a2e;
    overflow: hidden;
    position: relative;
-   transition: border-color 0.2s, box-shadow 0.2s, opacity 0.25s, transform 0.25s;
+   max-height: 600px;
+   transition: border-color 0.2s, box-shadow 0.2s, opacity 0.25s, transform 0.25s, max-height 0.28s ease, padding 0.25s, margin-bottom 0.25s;
    animation: fadeIn 0.2s ease;
 }
 
@@ -23,7 +24,16 @@
    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
-.removing { opacity: 0; transform: translateX(16px); }
+.removing {
+   opacity: 0;
+   transform: translateX(20px);
+   max-height: 0;
+   padding-top: 0;
+   padding-bottom: 0;
+   margin-bottom: -6px;
+   border-top-width: 0;
+   border-bottom-width: 0;
+}
 
 /* ── Просрочено ── */
 .overdue {
@@ -460,6 +470,11 @@
 }
 
 .addSubtaskInput::placeholder { color: #2a2a2e; }
+
+/* ── Hide add-subtask row until card is hovered or input is focused ── */
+.addSubtaskRow { transition: opacity 0.15s; opacity: 0; }
+.todoItem:hover .addSubtaskRow,
+.addSubtaskRow:focus-within { opacity: 1; }
 
 .addSubtaskBtn {
    background: transparent;

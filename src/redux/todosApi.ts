@@ -13,6 +13,8 @@ export interface Recurrence {
    intervalUnit?: IntervalUnit;
    // Свой вариант Б: конкретные дни недели (0=Пн … 6=Вс)
    weekDays?: number[];
+   /** ISO date string — stop recurring after this date (inclusive) */
+   endDate?: string;
 }
 
 export interface Subtask {

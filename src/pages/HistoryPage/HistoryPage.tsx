@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetHistoryQuery } from '../../redux';
-import { loadSettings } from '../../utils';
+import { useAppSettings } from '../../context/SettingsContext';
 import styles from './HistoryPage.module.css';
 
 const ACTION_META = {
@@ -30,10 +30,13 @@ const formatTime = (date: Date) =>
 export const HistoryPage = () => {
    const { id } = useParams<{ id: string }>();
    const { data: history, isLoading } = useGetHistoryQuery(id ?? '');
-   const pageSize = loadSettings(id ?? '').historyPageSize;
+   const pageSize = useAppSettings().historyPageSize;
 
    const [page,   setPage]   = useState(1);
    const [filter, setFilter] = useState<ActionKey | 'all'>('all');
+
+   // Reset to first page when page size changes
+   useEffect(() => { setPage(1); }, [pageSize]);
 
    const sorted = useMemo(
       () => [...(history ?? [])].reverse(),
